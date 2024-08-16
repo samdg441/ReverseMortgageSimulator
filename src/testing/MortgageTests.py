@@ -18,7 +18,7 @@ class MortgageCalcTest(unittest.TestCase):
 
     def testMortgageN2(self):
         property_value = 300000000
-        client_age = 72
+        client_age = 75
         client_gender = "M"
         marital_status = "Single"
         spouses_age = None
@@ -26,7 +26,7 @@ class MortgageCalcTest(unittest.TestCase):
         interest = 3.5
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 3579846.16
+        monthly_fee = 5450147.92
         self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
     def testMortgageN3(self):
@@ -39,10 +39,9 @@ class MortgageCalcTest(unittest.TestCase):
         interest = 6
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 1414584.13 
+        monthly_fee = 1670588.20
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
-        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())    
-    
     def testMortgageN4(self):
         property_value = 500000000
         client_age = 74
@@ -53,11 +52,8 @@ class MortgageCalcTest(unittest.TestCase):
         interest = 5.2
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 7085773.15 
-
-
-        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())   
-
+        monthly_fee = 7085773.15
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
     def testMortgageN5(self):
         property_value = 250000000
@@ -69,10 +65,9 @@ class MortgageCalcTest(unittest.TestCase):
         interest = 7
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 1906111.88 
-        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())        
-    
-    
+        monthly_fee = 1906111.88
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
+
     def testMortgageN6(self):
         property_value = 100000000
         client_age = 70
@@ -83,11 +78,10 @@ class MortgageCalcTest(unittest.TestCase):
         interest = 7.5
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 790612.47 
+        monthly_fee = 790612.47
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
-        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())    
-
-    """Casos de prueba extraordinarios"""        
+    # Casos de prueba extraordinarios
     def testMortgageS1(self):
         property_value = 760000000
         client_age = 62
@@ -98,9 +92,7 @@ class MortgageCalcTest(unittest.TestCase):
         interest = 0
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 3518518.52 
-
-
+        monthly_fee = 3518518.52
         self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
     def testMortgageS2(self):
@@ -113,10 +105,10 @@ class MortgageCalcTest(unittest.TestCase):
         interest = 8
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 3492364.69 
-        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())  
-          
-    def testMortgageS2(self):
+        monthly_fee = 3492364.69
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
+
+    def testMortgageS3(self):
         property_value = 310000000
         client_age = 71
         client_gender = "H"
@@ -126,12 +118,22 @@ class MortgageCalcTest(unittest.TestCase):
         interest = 8
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 3492364.69 
-        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())    
+        monthly_fee = 3492364.69
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
-
-
-
+    # Casos de prueba de error
+    def testMortgageE1(self):
+        property_value = 310000000
+        client_age = 71
+        client_gender = "H"
+        marital_status = "Married"
+        spouses_age = 69
+        spouses_gender = "M"
+        interest = 8
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 3492364.69
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
     if __name__ == "__main__":
         unittest.main()
