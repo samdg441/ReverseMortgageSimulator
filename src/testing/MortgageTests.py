@@ -3,6 +3,9 @@ from src.model import mortgage_calc_logic
 
 
 class MortgageCalcTest(unittest.TestCase):
+
+    """Casos de prueba normales"""
+
     def testMortgageN1(self):
         property_value = 150000000
         client_age = 65
@@ -87,7 +90,10 @@ class MortgageCalcTest(unittest.TestCase):
 
         self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())    
 
-    """Casos de prueba extraordinarios"""        
+    """Casos de prueba extraordinarios"""      
+
+    #Tasa de interés igual a 0  
+
     def testMortgageS1(self):
         property_value = 760000000
         client_age = 62
@@ -103,6 +109,8 @@ class MortgageCalcTest(unittest.TestCase):
 
         self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
+    #Tasa de interés máxima
+
     def testMortgageS2(self):
         property_value = 310000000
         client_age = 71
@@ -115,19 +123,74 @@ class MortgageCalcTest(unittest.TestCase):
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
         monthly_fee = 3492364.69 
         self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())  
-          
-    def testMortgageS2(self):
-        property_value = 310000000
-        client_age = 71
+    
+    #Edad minima mujer
+    
+    def testMortgageS3(self):
+        property_value = 800000000
+        client_age = 74
         client_gender = "H"
         marital_status = "Married"
-        spouses_age = 69
+        spouses_age = 71
         spouses_gender = "M"
-        interest = 8
+        interest = 5
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 3492364.69 
+        monthly_fee = 8441882.70 
+  
         self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())    
+    
+    #Edad minima hombre
+    
+    def testMortgageS4(self):
+        property_value = 424000000
+        client_age = 79
+        client_gender = "M"
+        marital_status = "Married"
+        spouses_age = 66
+        spouses_gender = "H"
+        interest = 6.2
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 5096834.26 
+
+ 
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())    
+
+    #Edad máxima mujer
+
+    def testMortgageS5(self):
+        property_value = 280000000
+        client_age = 79
+        client_gender = "M"
+        marital_status = "Married"
+        spouses_age = 79
+        spouses_gender = "M"
+        interest = 3.3
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 23746276.32 
+
+ 
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())   
+
+    #Edad máxima hombre    
+
+    def testMortgageS6(self):
+        property_value = 900000000
+        client_age = 76
+        client_gender = "M"
+        marital_status = "Married"
+        spouses_age = 65
+        spouses_gender = "H"
+        interest = 4.3
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 9205388.81 
+
+ 
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
+    
 
 
 
