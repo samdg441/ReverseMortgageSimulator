@@ -3,6 +3,7 @@ from src.model import mortgage_calc_logic
 
 
 class MortgageCalcTest(unittest.TestCase):
+    # Normal cases
     def testMortgageN1(self):
         property_value = 150000000
         client_age = 65
@@ -81,15 +82,15 @@ class MortgageCalcTest(unittest.TestCase):
         monthly_fee = 790612.47
         self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
-    # Casos de prueba extraordinarios
+    # Special cases
     def testMortgageS1(self):
         property_value = 760000000
         client_age = 62
         client_gender = "M"
-        marital_status = "Divorced"
+        marital_status = "Single"
         spouses_age = None
         spouses_gender = None
-        interest = 0
+        interest = 0  # Zero interest rate
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
         monthly_fee = 3518518.52
@@ -102,26 +103,71 @@ class MortgageCalcTest(unittest.TestCase):
         marital_status = "Married"
         spouses_age = 69
         spouses_gender = "M"
-        interest = 8
+        interest = 8  # Max interest rate (8)
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
         monthly_fee = 3492364.69
         self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
     def testMortgageS3(self):
-        property_value = 310000000
-        client_age = 71
+        property_value = 800000000
+        client_age = 74
         client_gender = "H"
         marital_status = "Married"
-        spouses_age = 69
+        spouses_age = 71  # Minimum M age (71)
         spouses_gender = "M"
-        interest = 8
+        interest = 5
         client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
-        monthly_fee = 3492364.69
+        monthly_fee = 8441882.70
+
         self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
 
-    # Casos de prueba de error
+    def testMortgageS4(self):
+        property_value = 424000000
+        client_age = 79
+        client_gender = "M"
+        marital_status = "Married"
+        spouses_age = 66  # Minimum H age (66)
+        spouses_gender = "H"
+        interest = 6.2
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 5096834.26
+
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
+
+    def testMortgageS5(self):
+        property_value = 280000000
+        client_age = 79  # Maximum M age (79)
+        client_gender = "M"
+        marital_status = "Married"
+        spouses_age = 79  # Maximum M age (79)
+        spouses_gender = "M"
+        interest = 3.3
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 23746276.32
+
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
+
+        # Edad máxima hombre
+
+    def testMortgageS6(self):
+        property_value = 900000000
+        client_age = 76
+        client_gender = "M"
+        marital_status = "Married"
+        spouses_age = 74  # Maximum H age (74)
+        spouses_gender = "H"
+        interest = 4.3
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 9205388.81
+
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
+
+    # Error cases
     def testMortgageE1(self):
         property_value = 450000000
         client_age = 70
