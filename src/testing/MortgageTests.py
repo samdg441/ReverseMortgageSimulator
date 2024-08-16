@@ -85,7 +85,53 @@ class MortgageCalcTest(unittest.TestCase):
         mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
         monthly_fee = 790612.47 
 
-        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())        
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())    
+
+    """Casos de prueba extraordinarios"""        
+    def testMortgageS1(self):
+        property_value = 760000000
+        client_age = 62
+        client_gender = "M"
+        marital_status = "Single"
+        spouses_age = None
+        spouses_gender = None
+        interest = 0
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 3518518.52 
+
+
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())
+
+    def testMortgageS2(self):
+        property_value = 310000000
+        client_age = 71
+        client_gender = "H"
+        marital_status = "Married"
+        spouses_age = 69
+        spouses_gender = "M"
+        interest = 8
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 3492364.69 
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())  
+          
+    def testMortgageS2(self):
+        property_value = 310000000
+        client_age = 71
+        client_gender = "H"
+        marital_status = "Married"
+        spouses_age = 69
+        spouses_gender = "M"
+        interest = 8
+        client = mortgage_calc_logic.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+        mortgage = mortgage_calc_logic.Mortgage(property_value, interest, client)
+        monthly_fee = 3492364.69 
+        self.assertEqual(monthly_fee, mortgage.calculate_monthly_fee())    
+
+
+
+
 
     if __name__ == "__main__":
         unittest.main()
