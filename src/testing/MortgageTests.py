@@ -59,7 +59,7 @@ class MortgageCalcTest(unittest.TestCase):
         property_value = 250000000
         client_age = 60
         client_gender = "M"
-        marital_status = "Single"
+        marital_status = "Widowed"
         spouses_age = None
         spouses_gender = None
         interest = 7
@@ -86,7 +86,7 @@ class MortgageCalcTest(unittest.TestCase):
         property_value = 760000000
         client_age = 62
         client_gender = "M"
-        marital_status = "Single"
+        marital_status = "Divorced"
         spouses_age = None
         spouses_gender = None
         interest = 0
