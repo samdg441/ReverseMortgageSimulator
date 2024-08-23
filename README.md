@@ -9,3 +9,5 @@ Con este proyecto se busca lograr simular una hipoteca inversa teniendo en cuent
 - Edad del cónyuge
 - Género del cónyuge
 - Tasa de interés
+
+---
