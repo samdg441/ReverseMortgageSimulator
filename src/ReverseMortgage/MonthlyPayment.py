@@ -41,16 +41,52 @@ class Client:
         self.minor_gender = self.check_minor_gender()
         self.estimated_years_of_life = self.calculate_years_of_life()
 
+    def check_valid_age(self) -> None:
+        max_male_age_allowed = 74
+        max_female_age_allowed = 79
+
+        if self.age < 0:
+            raise NegativeAge()
+        elif self.gender.lower() == 'm' and self.age > max_male_age_allowed:
+            raise AboveMaxAge()
+        elif self.gender.lower() == 'f' and self.age > max_female_age_allowed:
+            raise AboveMaxAge()
+        
+        if self.marital_status.lower() == 'married':
+            if self.spouses_age < 0:
+                raise NegativeAge()
+            elif self.spouses_gender.lower() == 'm' and self.spouses_age > max_male_age_allowed:
+                raise AboveMaxAge()
+            elif self.spouses_gender.lower() == 'f' and self.spouses_age > max_female_age_allowed:
+                raise AboveMaxAge()
+        
+    def check_valid_gender(self) -> None:
+        available_genders = ['m', 'f']
+        if self.gender.lower() not in available_genders:
+            raise InvalidGender(f'Gender {self.gender} is not valid')
+        
+        if self.marital_status.lower() == 'married':
+            if self.spouses_gender.lower() not in available_genders:
+                raise InvalidGender(f'Spouses gender {self.spouses_gender} is not valid')
+        
+    def check_valid_marital_status(self) -> None:
+        available_marital_status = ['married', 'single', 'widowed', 'divorced']
+        if self.marital_status.lower() not in available_marital_status:
+            raise InvalidMaritalStatus()
+
     def check_minor_age(self):
-        if self.marital_status != "Married" or self.age <= self.spouses_age:
+        self.check_valid_age()
+        self.check_valid_marital_status()
+        if self.marital_status.lower() != "married" or self.age <= self.spouses_age:
             return self.age
-        elif self.age < 0 or self.spouses_age < 0:
-            raise NegativeAge('Age cannot be negative')
         else:
             return self.spouses_age
         
     def check_minor_gender(self):
-        if self.marital_status != "Married" or self.minor_age == self.age:
+        self.check_valid_gender()
+        self.check_valid_gender()
+        self.check_valid_marital_status()
+        if self.marital_status.lower() != "married" or self.minor_age == self.age:
             return self.gender
         else:
             return self.spouses_gender
@@ -59,14 +95,13 @@ class Client:
         male_life_expect = 75
         female_life_expect = 80
 
-        if self.minor_gender == "M":
-            if self.minor_age < 0:
-                raise NegativeAge('Age cannot be negative')
+        self.check_valid_age()
+        self.check_valid_gender()
+
+        if self.minor_gender.lower() == "m":
             return male_life_expect - self.minor_age
         
-        elif self.minor_gender == "F":
-            if self.minor_age < 0:
-                raise NegativeAge('Age cannot be negative')
+        elif self.minor_gender.lower() == "f":
             return female_life_expect - self.minor_age
         
         else:
@@ -81,11 +116,25 @@ class ReverseMortgage:
         self.quotas = self.calculate_quotas()
         self.monthly_rate = self.calculate_monthly_rate()
     
+    def check_valid_property_value(self):
+        if self.property_value < 0:
+            raise NegativePropertyValue()
+        elif self.property_value == 0:
+            raise PropertyZeroValue()
+        
+    def check_valid_interest(self):
+        max_interest = 8
+        if self.interest < 0:
+            raise NegativeInterest()
+        elif self.interest > max_interest:
+            raise AboveMaxInterest
 
     def calculate_quotas(self):
         return self.client.estimated_years_of_life * 12
     
     def calculate_monthly_rate(self):
+        self.check_valid_interest()
+
         if self.interest == 0:
             return 0
         
@@ -93,7 +142,10 @@ class ReverseMortgage:
         monthly_rate = (1 + annual_rate) ** (1 / 12) - 1
         return monthly_rate
         
-    def calculate_monthly_fee(self):
+    def calculate_monthly_fee(self) -> float:
+        self.check_valid_interest()
+        self.check_valid_property_value()
+
         if self.interest == 0:
             return round(self.property_value / self.quotas, 2)
         
@@ -104,4 +156,3 @@ class ReverseMortgage:
         monthly_fee = numerator / denominator
         
         return round(monthly_fee, 2)
-
