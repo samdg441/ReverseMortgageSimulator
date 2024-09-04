@@ -4,70 +4,83 @@ from  ReverseMortgage import MonthlyPayment
 
 def main_menu():
     client = None
-    reverse_mortgage = None
 
+    print("--Reverse Mortgage Simulator--")
+    print('')
     while True:
-        print("\n--- Main Menu ---")
-        print("1. Enter Client Information")
-        print("2. Calculate Reverse Mortgage")
-        print("3. Exit")
-        
-        try:
-            option = int(input("Choose an option (1-3): "))
-        except ValueError:
-            print("Please enter a valid number.")
-            continue
-        
-        if option == 1:
-            try:
-                age = int(input("Enter your age: "))
-                
-                gender = input("Enter your gender (M/F): ").strip().upper()
-                marital_status = input("Enter your marital status: ").strip()
-                if marital_status.lower() == 'married':
-                    spouses_age = int(input("Enter your spouse's age (press Enter if not applicable): ").strip())
-                    spouses_gender = input("Enter your spouse's gender (press Enter if not applicable): ").strip().upper()
-                else:
-                    spouses_age = None
-                    spouses_gender = None
-                client = MonthlyPayment.Client(age, gender, marital_status, spouses_age, spouses_gender)
-                print("Client information successfully recorded.")
-            
-            except MonthlyPayment.ClientException as e:
-                print(f"Error: {e}")
-            except ValueError:
-                print("Invalid input. Please enter the correct data.")
-        
-        elif option == 2:
+        print("Main Menu:")
+        print("1. Change Client Information")
+        print("2. Show Client Information")
+        print("3. Calculate Reverse Mortgage")
+        print("4. Exit")
+        print('')
+        choice = input("Enter your choice: ")
+        print('')
+
+        if choice == '1':
+            client = change_client_information()
+        elif choice == '2':
             if client is None:
-                print("You need to enter client information first.")
-                continue
-            
-            try:
-                property_value = int(input("Enter property value: "))
-                interest = float(input("Enter interest rate (as a percentage): "))
-
-                if property_value <= 0:
-                    raise MonthlyPayment.NegativePropertyValue("Property value must be positive.")
-                if interest < 0:
-                    raise MonthlyPayment.NegativeInterest("Interest rate cannot be negative.")
-                
-                reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-                print(f"Estimated years of life: {client.estimated_years_of_life}")
-                print(f"Monthly rate: {reverse_mortgage.monthly_rate:.4f}")
-                print(f"Monthly fee: {reverse_mortgage.calculate_monthly_fee():.2f}")
-
-            except MonthlyPayment.ReverseMortgageException as e:
-                print(f"Error: {e}")
-            except ValueError:
-                print("Invalid input. Please enter the correct data.")
-        
-        elif option == 3:
-            print("Exiting the program...")
+                print("Client information not found. Please enter client information first.")
+                print('')
+            else:
+                print(client)
+                print('')
+        elif choice == '3':
+            calculate_reverse_mortgage(client)
             break
-        
+        elif choice == '4':
+            print("Exiting...")
+            break
         else:
-            print("Invalid option, please choose a number from 1 to 3.")
+            print("Invalid choice. Please try again.")
+
+def change_client_information():
+    while True:
+        try:
+            age = int(input("Enter age: "))
+            gender = input("Enter gender (M/F): ").strip().upper()
+            marital_status = input("Enter marital status (Married/Single/Widowed/Divorced): ").strip().lower()
+            spouses_age = None
+            spouses_gender = None
+            if marital_status.lower() == 'married':
+                print('')
+                spouses_age = int(input("Enter spouse's age: "))
+                spouses_gender = input("Enter spouse's gender (M/F): ").strip().upper()
+            
+            client = MonthlyPayment.Client(age, gender, marital_status, spouses_age, spouses_gender)
+
+            break
+        except (ValueError, MonthlyPayment.ClientException) as e:
+            print('')
+            print(f"Invalid input: {e}")
+            print('')
+    print('')
+    print("Client information updated successfully.")
+    print('')
+
+    return client
+            
+
+def calculate_reverse_mortgage(client: MonthlyPayment.Client):
+    while True:
+        try:
+            property_value = float(input("Enter property value: "))
+            interest_rate = float(input("Enter interest rate: "))
+            client = MonthlyPayment.Client(0, 'M', 'Single', 0, 'M')
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest_rate, client)
+            break
+        except (ValueError, MonthlyPayment.ReverseMortgageException) as e:
+            print('')
+            print(f"Invalid input: {e}")
+            print('')
+    print('')
+    print("Reverse mortgage calculated successfully.")
+    print('')
+    print(reverse_mortgage)
+    print('')
+        
 
 if __name__ == "__main__":
     main_menu()
+    
