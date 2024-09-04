@@ -46,24 +46,24 @@ class Client:
         max_female_age_allowed = 79
 
         if self.age < 0:
-            raise NegativeAge()
+            raise NegativeAge(f'Age {self.age} can not be negative')
         elif self.gender.lower() == 'm' and self.age > max_male_age_allowed:
-            raise AboveMaxAge()
+            raise AboveMaxAge(f'Age {self.age} is greater than the maximum age allowed for men {max_male_age_allowed}')
         elif self.gender.lower() == 'f' and self.age > max_female_age_allowed:
-            raise AboveMaxAge()
+            raise AboveMaxAge(f'Age {self.age} is greater than the maximum age allowed for women {max_female_age_allowed}')
         
         if self.marital_status.lower() == 'married':
             if self.spouses_age < 0:
-                raise NegativeAge()
+                raise NegativeAge(f'Age {self.spouses_age} can not be negative')
             elif self.spouses_gender.lower() == 'm' and self.spouses_age > max_male_age_allowed:
-                raise AboveMaxAge()
+                raise AboveMaxAge(f'Age {self.spouses_age} is greater than the maximum age allowed for men {max_male_age_allowed}')
             elif self.spouses_gender.lower() == 'f' and self.spouses_age > max_female_age_allowed:
-                raise AboveMaxAge()
+                raise AboveMaxAge(f'Age {self.spouses_age} is greater than the maximum age allowed for women {max_female_age_allowed}')
         
     def check_valid_gender(self) -> None:
         available_genders = ['m', 'f']
         if self.gender.lower() not in available_genders:
-            raise InvalidGender(f'Gender {self.gender} is not valid')
+            raise InvalidGender(f'Gender {self.gender} is not valid, only "M" or "F" allowed')
         
         if self.marital_status.lower() == 'married':
             if self.spouses_gender.lower() not in available_genders:
@@ -72,7 +72,7 @@ class Client:
     def check_valid_marital_status(self) -> None:
         available_marital_status = ['married', 'single', 'widowed', 'divorced']
         if self.marital_status.lower() not in available_marital_status:
-            raise InvalidMaritalStatus()
+            raise InvalidMaritalStatus(f'Marital status {self.marital_status} is not valid, only married, single, widowed or divorced allowed')
 
     def check_minor_age(self):
         self.check_valid_age()
@@ -103,9 +103,6 @@ class Client:
         
         elif self.minor_gender.lower() == "f":
             return female_life_expect - self.minor_age
-        
-        else:
-            raise InvalidGender
 
 
 class ReverseMortgage:
@@ -118,16 +115,16 @@ class ReverseMortgage:
     
     def check_valid_property_value(self):
         if self.property_value < 0:
-            raise NegativePropertyValue()
+            raise NegativePropertyValue(f'Property value {self.property_value} can not be negative')
         elif self.property_value == 0:
-            raise PropertyZeroValue()
+            raise PropertyZeroValue(f'Property value {self.property_value} can not be zero')
         
     def check_valid_interest(self):
         max_interest = 8
         if self.interest < 0:
-            raise NegativeInterest()
+            raise NegativeInterest(f'Interest {self.interest} can not be negative')
         elif self.interest > max_interest:
-            raise AboveMaxInterest
+            raise AboveMaxInterest(f'interest {self.interest} can not be above {max_interest}')
 
     def calculate_quotas(self):
         return self.client.estimated_years_of_life * 12
