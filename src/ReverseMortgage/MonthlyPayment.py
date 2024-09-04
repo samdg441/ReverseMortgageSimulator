@@ -1,32 +1,40 @@
-class NegativeInterest(Exception):
+class ClientException(Exception):
     pass
 
 
-class AboveMaxInterest(Exception):
+class ReverseMortgageException(Exception):
     pass
 
 
-class NegativePropertyValue(Exception):
+class NegativeInterest(ReverseMortgageException):
     pass
 
 
-class PropertyZeroValue(Exception):
+class AboveMaxInterest(ReverseMortgageException):
     pass
 
 
-class NegativeAge(Exception):
+class NegativePropertyValue(ReverseMortgageException):
     pass
 
 
-class AboveMaxAge(Exception):
+class PropertyZeroValue(ReverseMortgageException):
     pass
 
 
-class InvalidGender(Exception):
+class NegativeAge(ClientException):
     pass
 
 
-class InvalidMaritalStatus(Exception):
+class AboveMaxAge(ClientException):
+    pass
+
+
+class InvalidGender(ClientException):
+    pass
+
+
+class InvalidMaritalStatus(ClientException):
     pass
 
 
