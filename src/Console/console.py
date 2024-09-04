@@ -24,15 +24,16 @@ def main_menu():
                 
                 gender = input("Enter your gender (M/F): ").strip().upper()
                 marital_status = input("Enter your marital status: ").strip()
-                spouses_age = input("Enter your spouse's age (press Enter if not applicable): ").strip()
-                spouses_age = int(spouses_age) if spouses_age else None
-                spouses_gender = input("Enter your spouse's gender (press Enter if not applicable): ").strip().upper()
-                spouses_gender = spouses_gender if spouses_gender else None
-
+                if marital_status.lower() == 'married':
+                    spouses_age = int(input("Enter your spouse's age (press Enter if not applicable): ").strip())
+                    spouses_gender = input("Enter your spouse's gender (press Enter if not applicable): ").strip().upper()
+                else:
+                    spouses_age = None
+                    spouses_gender = None
                 client = MonthlyPayment.Client(age, gender, marital_status, spouses_age, spouses_gender)
                 print("Client information successfully recorded.")
             
-            except (MonthlyPayment.NegativeAge, MonthlyPayment.InvalidGender) as e:
+            except MonthlyPayment.ClientException as e:
                 print(f"Error: {e}")
             except ValueError:
                 print("Invalid input. Please enter the correct data.")
@@ -56,7 +57,7 @@ def main_menu():
                 print(f"Monthly rate: {reverse_mortgage.monthly_rate:.4f}")
                 print(f"Monthly fee: {reverse_mortgage.calculate_monthly_fee():.2f}")
 
-            except (MonthlyPayment.NegativePropertyValue, MonthlyPayment.NegativeInterest) as e:
+            except MonthlyPayment.ReverseMortgageException as e:
                 print(f"Error: {e}")
             except ValueError:
                 print("Invalid input. Please enter the correct data.")
@@ -70,10 +71,3 @@ def main_menu():
 
 if __name__ == "__main__":
     main_menu()
-
-           
-
-        
-
-
-                
