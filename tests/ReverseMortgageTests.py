@@ -173,9 +173,10 @@ class MortgageCalcTest(unittest.TestCase):
         spouses_age = None
         spouses_gender = None
         interest = -5  # Error: NegativeInterest
-        client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
-        mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-        self.assertRaises(MonthlyPayment.NegativeInterest, mortgage.calculate_monthly_fee)
+        with self.assertRaises(MonthlyPayment.NegativeInterest):
+            client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
+            reverse_mortgage.calculate_monthly_fee()
 
     def testMortgageE2(self):
         property_value = 310000000
@@ -185,9 +186,10 @@ class MortgageCalcTest(unittest.TestCase):
         spouses_age = 68
         spouses_gender = 'F'
         interest = 9  # Error: AboveMaxInterest (max 8)
-        client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
-        mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-        self.assertRaises(MonthlyPayment.AboveMaxInterest, mortgage.calculate_monthly_fee)
+        with self.assertRaises(MonthlyPayment.AboveMaxInterest):
+            client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
+            reverse_mortgage.calculate_monthly_fee()
 
     def testMortgageE3(self):
         property_value = -250000000  # (Error: NegativePropertyValue)
@@ -197,9 +199,10 @@ class MortgageCalcTest(unittest.TestCase):
         spouses_age = None
         spouses_gender = None
         interest = 7.5
-        client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
-        mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-        self.assertRaises(MonthlyPayment.NegativePropertyValue, mortgage.calculate_monthly_fee)
+        with self.assertRaises(MonthlyPayment.NegativePropertyValue):
+            client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
+            reverse_mortgage.calculate_monthly_fee()
 
     def testMortgageE4(self):
         property_value = 0  # (Error: PropertyZeroValue)
@@ -209,9 +212,10 @@ class MortgageCalcTest(unittest.TestCase):
         spouses_age = None
         spouses_gender = None
         interest = 6.8
-        client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
-        mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-        self.assertRaises(MonthlyPayment.PropertyZeroValue, mortgage.calculate_monthly_fee)
+        with self.assertRaises(MonthlyPayment.PropertyZeroValue):
+            client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
+            reverse_mortgage.calculate_monthly_fee()
 
     def testMortgageE5(self):
         property_value = 290000000
@@ -221,9 +225,10 @@ class MortgageCalcTest(unittest.TestCase):
         spouses_age = 65
         spouses_gender = 'F'
         interest = 8
-        client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
-        mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-        self.assertRaises(MonthlyPayment.NegativeAge, mortgage.calculate_monthly_fee)
+        with self.assertRaises(MonthlyPayment.NegativeAge):
+            client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
+            reverse_mortgage.calculate_monthly_fee()
 
     def testMortgageE6(self):
         property_value = 320000000
@@ -233,9 +238,10 @@ class MortgageCalcTest(unittest.TestCase):
         spouses_age = None
         spouses_gender = None
         interest = 7.2
-        client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
-        mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-        self.assertRaises(MonthlyPayment.AboveMaxAge, mortgage.calculate_monthly_fee)
+        with self.assertRaises(MonthlyPayment.AboveMaxAge):
+            client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
+            reverse_mortgage.calculate_monthly_fee()
 
     def testMortgageE7(self):
         property_value = 330000000
@@ -245,9 +251,10 @@ class MortgageCalcTest(unittest.TestCase):
         spouses_age = 75
         spouses_gender = 'M'
         interest = 7.9
-        client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
-        mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-        self.assertRaises(MonthlyPayment.AboveMaxAge, mortgage.calculate_monthly_fee)
+        with self.assertRaises(MonthlyPayment.AboveMaxAge):
+            client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
+            reverse_mortgage.calculate_monthly_fee()
 
     def testMortgageE8(self):
         property_value = 350000000
@@ -257,9 +264,10 @@ class MortgageCalcTest(unittest.TestCase):
         spouses_age = None
         spouses_gender = None
         interest = 7
-        client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
-        mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-        self.assertRaises(MonthlyPayment.InvalidGender, mortgage.calculate_monthly_fee)
+        with self.assertRaises(MonthlyPayment.InvalidGender):
+            client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
+            reverse_mortgage.calculate_monthly_fee()
 
     def testMortgageE9(self):
         property_value = 400000000
@@ -269,9 +277,10 @@ class MortgageCalcTest(unittest.TestCase):
         spouses_age = None
         spouses_gender = None
         interest = 7.5
-        client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
-        mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
-        self.assertRaises(MonthlyPayment.InvalidMaritalStatus, mortgage.calculate_monthly_fee)
+        with self.assertRaises(MonthlyPayment.InvalidMaritalStatus):
+            client = MonthlyPayment.Client(client_age, client_gender, marital_status, spouses_age, spouses_gender)
+            reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest, client)
+            reverse_mortgage.calculate_monthly_fee()
 
 if __name__ == "__main__":
     unittest.main()
