@@ -32,20 +32,14 @@ The project is divided into two main folders, an src folder and a tests folder. 
 
   Change your directory to the `Console` folder:
 
-    `cd path\to\ReverseMortgageSimulator\src\Console`
+    `cd path\to\ReverseMortgageSimulator`
 
   **Example:** If you cloned the repository to C:\Projects, you would run:
 
-    `cd C:\Projects\ReverseMortgageSimulator\src\Console`
-  
-- **Set python path:**
-
-  Set the `PYTHONPATH` to point to the `src` directory. This allows Python to find the necessary modules.
-
-    `set PYTHONPATH=%CD%\..`
+    `cd C:\Projects\ReverseMortgageSimulator`
 
 - **Execute console python file:**
 
   Run the `console.py`
 
-    `py console.py`
+    `py src\Console\console.py`
