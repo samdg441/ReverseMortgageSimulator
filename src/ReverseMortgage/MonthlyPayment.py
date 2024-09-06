@@ -1,44 +1,88 @@
 class ClientException(Exception):
+    """
+    Base class for all client-related exceptions.
+    This exception is used for errors related to invalid client information.
+    """
     pass
 
 
 class ReverseMortgageException(Exception):
+    """
+    Base class for all reverse mortgage-related exceptions.
+    This exception is used for errors related to reverse mortgage calculations or constraints.
+    """
     pass
 
 
 class NegativeInterest(ReverseMortgageException):
+    """
+    Raised when a negative interest rate is encountered.
+    Reverse mortgages should not have negative interest rates.
+    """
     pass
 
 
 class AboveMaxInterest(ReverseMortgageException):
+    """
+    Raised when an interest rate exceeds the maximum allowable rate.
+    Reverse mortgages have a maximum interest rate limit.
+    """
     pass
 
 
 class NegativePropertyValue(ReverseMortgageException):
+    """
+    Raised when a negative property value is provided.
+    Property values must be positive for reverse mortgage calculations.
+    """
     pass
 
 
 class PropertyZeroValue(ReverseMortgageException):
+    """
+    Raised when a zero property value is provided.
+    A property value of zero is invalid for reverse mortgage calculations.
+    """
     pass
 
 
 class NegativeAge(ClientException):
+    """
+    Raised when a negative age is provided for a client.
+    Client age must be a positive integer.
+    """
     pass
 
 
 class AboveMaxAge(ClientException):
+    """
+    Raised when a client's age exceeds the maximum allowable age.
+    There is typically an upper limit for age in client-related calculations or constraints.
+    """
     pass
 
 
 class InvalidAge(ClientException):
+    """
+    Raised when an invalid age value is provided.
+    Age must be a valid positive integer within acceptable ranges.
+    """
     pass
 
 
 class InvalidGender(ClientException):
+    """
+    Raised when an invalid gender value is provided.
+    Gender must be specified in an acceptable format.
+    """
     pass
 
 
 class InvalidMaritalStatus(ClientException):
+    """
+    Raised when an invalid marital status value is provided.
+    Marital status must be specified in an acceptable format.
+    """
     pass
 
 
