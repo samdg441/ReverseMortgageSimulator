@@ -2,9 +2,9 @@
 
 ## Made By:
 
-Tomás Cordoba
+Tomás Cordoba Urquijo
 
-Emmanuel Calad 
+Emmanuel Calad Correa
 
 ## Purpose
 
@@ -22,25 +22,30 @@ Subsequently, the system will be in charge of carrying out the necessary calcula
 The project is divided into two main folders, an src folder and a tests folder. The src folder contains a module in which there is a file with the distribution of the classes and methods, and another is the module in which the execution of the program by console is found. On the other hand, the tests folder contains each of the unit tests (normal cases, extraordinary cases and error cases). In addition, there are 3 files of the general structure of a project (.gitignore, README.MD and License).
 
 ## Installation and Use
-First, clone the repository:
+- **Clone the Repository:**
+  
+  Open your command prompt and run:
 
-`git clone "https://github.com/emmanuelcalad0615/ReverseMortgageSimulator"`
+    `git clone "https://github.com/emmanuelcalad0615/ReverseMortgageSimulator"`
+  
+- **Navigate to the Console Directory:**
 
-Open the command prompt and put the relative path of the program (Replace "..." with the path of the project folder:
+  Change your directory to the `Console` folder:
 
-`cd ...\ReverseMortgageSimulator\src\Console`
+    `cd path\to\ReverseMortgageSimulator\src\Console`
 
-Set python path:
+  **Example:** If you cloned the repository to C:\Projects, you would run:
 
-`set PYTHONPATH=%CD%\..`
+    `cd C:\Projects\ReverseMortgageSimulator\src\Console`
+  
+- **Set python path:**
 
-Execute console python file:
+  Set the `PYTHONPATH` to point to the `src` directory. This allows Python to find the necessary modules.
 
-`py console.py`
+    `set PYTHONPATH=%CD%\..`
 
+- **Execute console python file:**
 
+  Run the `console.py`
 
-
-
-
-
+    `py console.py`
