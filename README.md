@@ -28,7 +28,15 @@ First, clone the repository:
 
 Open the command prompt and put the relative path of the program:
 
-`cd src\Console\console.py`
+`cd ...\src\Console\console.py`
+
+Set python path:
+
+`set PYTHONPATH=...\ReverseMortgageSimulator\src`
+
+Execute console python file:
+
+`py console.py`
 
 
 
