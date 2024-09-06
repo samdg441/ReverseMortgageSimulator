@@ -26,7 +26,7 @@ First, clone the repository:
 
 `git clone "https://github.com/emmanuelcalad0615/ReverseMortgageSimulator"`
 
-Open the command prompt and put the relative path of the program:
+Open the command prompt and put the relative path of the program (Replace "..." with the path of the project folder:
 
 `cd ...\ReverseMortgageSimulator\src\Console`
 
