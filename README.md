@@ -24,11 +24,11 @@ The project is divided into two main folders, an src folder and a tests folder. 
 ## Installation and Use
 First, clone the repository:
 
-git clone "https://github.com/emmanuelcalad0615/ReverseMortgageSimulator"
+`git clone "https://github.com/emmanuelcalad0615/ReverseMortgageSimulator"`
 
 Open the command promptOpen the command prompt and put the relative path of the program:
 
-cd 
+`cd cd ...\src\Console\console.py`
 
 
 
