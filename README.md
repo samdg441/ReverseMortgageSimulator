@@ -32,7 +32,7 @@ Open the command prompt and put the relative path of the program:
 
 Set python path:
 
-`set PYTHONPATH=...\ReverseMortgageSimulator\src`
+`set PYTHONPATH=%CD%\..`
 
 Execute console python file:
 
