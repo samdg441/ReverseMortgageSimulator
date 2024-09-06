@@ -67,7 +67,6 @@ def calculate_reverse_mortgage(client: MonthlyPayment.Client):
         try:
             property_value = float(input("Enter property value: "))
             interest_rate = float(input("Enter interest rate: "))
-            client = MonthlyPayment.Client(0, 'M', 'Single', 0, 'M')
             reverse_mortgage = MonthlyPayment.ReverseMortgage(property_value, interest_rate, client)
             break
         except (ValueError, MonthlyPayment.ReverseMortgageException) as e:
