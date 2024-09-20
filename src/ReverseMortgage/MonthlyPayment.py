@@ -62,6 +62,10 @@ class AboveMaxAge(ClientException):
     pass
 
 
+class BelowMinAge(ClientException):
+    pass
+
+
 class InvalidAge(ClientException):
     """
     Raised when an invalid age value is provided.
@@ -135,6 +139,8 @@ class Client:
 
         if self.age < 0:
             raise NegativeAge(f'Age ({self.age}) can not be negative')
+        elif self.age == 0:
+            raise InvalidAge(f'Age can not be zero')
         elif self.gender.lower() == 'm' and self.age > max_male_age_allowed:
             raise AboveMaxAge(f'Age ({self.age}) is greater than the maximum age allowed for males ({max_male_age_allowed})')
         elif self.gender.lower() == 'f' and self.age > max_female_age_allowed:
@@ -143,6 +149,8 @@ class Client:
         if self.marital_status.lower() == 'married':
             if self.spouses_age < 0:
                 raise NegativeAge(f'Age ({self.spouses_age}) can not be negative')
+            elif self.spouses_age == 0:
+                raise InvalidAge(f'Spouse\'s age can not be zero')
             elif self.spouses_gender.lower() == 'm' and self.spouses_age > max_male_age_allowed:
                 raise AboveMaxAge(f'Age ({self.spouses_age}) is greater than the maximum age allowed for males ({max_male_age_allowed})')
             elif self.spouses_gender.lower() == 'f' and self.spouses_age > max_female_age_allowed:
@@ -180,6 +188,7 @@ class Client:
         """
         self.check_valid_age()
         self.check_valid_marital_status()
+
         if self.marital_status.lower() != "married" or self.age <= self.spouses_age:
             return self.age
         else:
@@ -206,9 +215,13 @@ class Client:
         """
         male_life_expect = 75
         female_life_expect = 80
+        min_age_allowed = 60
 
         self.check_valid_age()
         self.check_valid_gender()
+
+        if self.minor_age < min_age_allowed:
+            raise InvalidAge(f'Age of younger person is lesser than minimum age allowed ({min_age_allowed})')
 
         if self.minor_gender.lower() == "m":
             return male_life_expect - self.minor_age
