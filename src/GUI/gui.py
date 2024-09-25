@@ -33,19 +33,19 @@ class ReverseMortgageApp(App):
         """
         layout = GridLayout(cols=2, spacing=10)
 
-        self.age_label = Label(text="Age *", size_hint=(0.5, 0.15))
+        self.age_label = Label(text="Age *", size_hint=(0.5, 0.15), font_size=20)
         layout.add_widget(self.age_label)
         self.age_input = TextInput(multiline=False, size_hint=(0.5, 0.15), input_filter="int", text='0')
         layout.add_widget(self.age_input)
         self.age_input.bind(text=self.check_valid_age)
 
-        self.gender_label = Label(text="Gender *", size_hint=(0.5, 0.15))
+        self.gender_label = Label(text="Gender *", size_hint=(0.5, 0.15), font_size=20)
         layout.add_widget(self.gender_label)
         self.gender_spinner = Spinner(text="Select", values=('M', 'F'), size_hint=(0.5, 0.15))
         layout.add_widget(self.gender_spinner)
         self.gender_spinner.bind(text=self.check_valid_spinner)
 
-        self.marital_status_label = Label(text="Marital Status *", size_hint=(0.5, 0.15))
+        self.marital_status_label = Label(text="Marital Status *", size_hint=(0.5, 0.15), font_size=20)
         layout.add_widget(self.marital_status_label)
         self.marital_status_spinner = Spinner(text="Select", values=('Married', 'Single', 'Widowed', 'Divorced'), size_hint=(0.5, 0.15))
         layout.add_widget(self.marital_status_spinner)
@@ -65,12 +65,12 @@ class ReverseMortgageApp(App):
         """
         layout = GridLayout(cols=2)
 
-        self.property_value_label = Label(text="Property Value", size_hint=(0.5, 0.1))
+        self.property_value_label = Label(text="Property Value", size_hint=(0.5, 0.1), font_size=20)
         layout.add_widget(self.property_value_label)
         self.property_value_input = TextInput(multiline=False, size_hint=(0.5, 0.1), input_filter="int", text='0')
         layout.add_widget(self.property_value_input)
 
-        self.interest_rate_label = Label(text="Interest Rate", size_hint=(0.5, 0.1))
+        self.interest_rate_label = Label(text="Interest Rate", size_hint=(0.5, 0.1), font_size=20)
         layout.add_widget(self.interest_rate_label)
         self.interest_rate_input = TextInput(multiline=False, size_hint=(0.5, 0.1), input_filter="float", text='0')
         layout.add_widget(self.interest_rate_input)
@@ -106,14 +106,14 @@ class ReverseMortgageApp(App):
         Updates the form when the marital status is set to 'Married', showing additional fields.
         """
         if text == 'Married' and not self.is_married:
-            self.spouse_age_label = Label(text="Spouse's Age *", size_hint=(0.5, 0.15))
+            self.spouse_age_label = Label(text="Spouse's Age *", size_hint=(0.5, 0.15), font_size=20)
             self.client_layout.add_widget(self.spouse_age_label)
 
             self.spouse_age_input = TextInput(multiline=False, size_hint=(0.5, 0.15), input_filter="int", text='0')
             self.client_layout.add_widget(self.spouse_age_input)
             self.spouse_age_input.bind(text=self.check_valid_age)
 
-            self.spouse_gender_label = Label(text="Spouse's Gender *", size_hint=(0.5, 0.15))
+            self.spouse_gender_label = Label(text="Spouse's Gender *", size_hint=(0.5, 0.15), font_size=20)
             self.client_layout.add_widget(self.spouse_gender_label)
 
             self.spouse_gender_spinner = Spinner(text="Select", values=('M', 'F'), size_hint=(0.5, 0.15))
