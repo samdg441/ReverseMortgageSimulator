@@ -6,6 +6,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.spinner import Spinner
 from kivy.uix.popup import Popup
+from kivy.core.window import Window
 import sys
 sys.path.append("src")
 
@@ -20,6 +21,7 @@ class ReverseMortgageApp(App):
         """
         Main method that initializes the application by creating the GUI layouts.
         """
+        Window.clearcolor = (0.1,0.1,0.2,0)
         self.client_layout = self.create_client_information_layout()
         self.property_layout = self.create_property_information_layout()
         self.inputs_layout = self.create_inputs_layout(self.client_layout, self.property_layout)
@@ -95,7 +97,7 @@ class ReverseMortgageApp(App):
         layout.add_widget(Label(text="Reverse Mortgage Calculator", size_hint=(1, 0.1), halign="center", font_family="Arial", font_size=30))
         layout.add_widget(inputs_layout)
 
-        self.calc_button = Button(text="Calculate", size_hint=(0.5, 0.1))
+        self.calc_button = Button(text="Calculate", size_hint=(0.5, 0.1), background_color=[0,0,0,1])
         layout.add_widget(self.calc_button)
         self.calc_button.bind(on_press=self.calculate_reverse_mortgage)
 
