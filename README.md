@@ -44,8 +44,8 @@ Before installing the required packages, it's recommended to create a virtual en
 
 #### Windows:
 
-    py -m venv venv
-    .\venv\Scripts\activate
+    py -m venv .venv
+    .venv\Scripts\activate
 
 #### macOS/Linux:
 
