@@ -65,12 +65,12 @@ class ReverseMortgageApp(App):
         """
         layout = GridLayout(cols=2)
 
-        self.property_value_label = Label(text="Home Value *", size_hint=(0.5, 0.1))
+        self.property_value_label = Label(text="Property Value", size_hint=(0.5, 0.1))
         layout.add_widget(self.property_value_label)
         self.property_value_input = TextInput(multiline=False, size_hint=(0.5, 0.1), input_filter="int", text='0')
         layout.add_widget(self.property_value_input)
 
-        self.interest_rate_label = Label(text="Interest Rate *", size_hint=(0.5, 0.1))
+        self.interest_rate_label = Label(text="Interest Rate", size_hint=(0.5, 0.1))
         layout.add_widget(self.interest_rate_label)
         self.interest_rate_input = TextInput(multiline=False, size_hint=(0.5, 0.1), input_filter="float", text='0')
         layout.add_widget(self.interest_rate_input)
