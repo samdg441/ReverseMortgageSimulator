@@ -1,5 +1,4 @@
-"""crea la tabla de usuarios"""
-CREATE TABLE CLIENT (
+CREATE TABLE Users (
     id VARCHAR(20) NOT NULL PRIMARY KEY,
     age VARCHAR(2) NOT NULL,
     marital_status TEXT NOT NULL,
