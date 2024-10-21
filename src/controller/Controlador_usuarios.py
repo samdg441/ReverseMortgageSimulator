@@ -105,7 +105,7 @@ class ClientController:
             cursor = ClientController.get_cursor()
 
             # Execute the query to create the table in the database
-            cursor.execute("""CREATE TABLE Clients (id_number VARCHAR(20) NOT NULL PRIMARY KEY,
+            cursor.execute("""CREATE TABLE Users (id VARCHAR(20) NOT NULL PRIMARY KEY,
                                                     age VARCHAR(2) NOT NULL,
                                                     marital_status TEXT NOT NULL,
                                                     spouse_age VARCHAR(2),
