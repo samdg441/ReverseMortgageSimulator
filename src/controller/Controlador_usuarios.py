@@ -1,4 +1,4 @@
-# Lo importamos para poder incluir la ruta de busqueda python
+# Importing to include the search path
 import sys
 sys.path.append("src")
 sys.path.append(".")
@@ -7,306 +7,279 @@ sys.path.append(".")
 import psycopg2
 
 from controller import Secret_Config
-from model.Usuario import Usuario
+from model.Client import Client
 
-# CONSTANTES
-#Edad maxima permitida
-ESPERANZA_VIDA_HOMBRES = 84
-ESPERANZA_VIDA_MUJERES = 86
+# CONSTANTS
+# Maximum age allowed
+MAX_LIFE_EXPECTANCY_MALES = 84
+MAX_LIFE_EXPECTANCY_FEMALES = 86
 
-#Edad minima permitida
-EDAD_MINIMA = 62
+# Minimum age allowed
+MIN_AGE = 62
 
-#Valor minimo de la propiedad
-VALOR_MINIMO_INMUEBLE = 10000000
+# Minimum property value
+MIN_PROPERTY_VALUE = 10000000
 
-#Tasa de interes maxima y minima permitidas
-INTERES_MINIMO = 6
-INTERES_MAXIMO = 43
+# Maximum and minimum interest rates allowed
+MIN_INTEREST_RATE = 6
+MAX_INTEREST_RATE = 43
 
 
-#EXCEPCIONES
-class Usuario_No_Actualizado_Exception(Exception):
+# EXCEPTIONS
+class ClientNotUpdatedException(Exception):
     """ 
-
-    Excepción personalizada para cuando el usuario no se actualiza
-
+    Custom exception for when the client cannot be updated
     """
     def __init__(self):
-        super().__init__(f"El usuario no se pudo actualizar")
+        super().__init__(f"The client could not be updated")
 
-class Usuario_No_Insertado_Exception(Exception):
+class ClientNotInsertedException(Exception):
     """ 
-
-    Excepción personalizada para cuando el usuario no se puede insertar a la tabla
-
+    Custom exception for when the client cannot be inserted into the table
     """
     def __init__(self):
-        super().__init__(f"El usuario no se pudo Insertar")
+        super().__init__(f"The client could not be inserted")
 
-class Usuario_No_Eliminado_Exception(Exception):
+class ClientNotDeletedException(Exception):
     """ 
-
-    Excepción personalizada para cuando el usuario no se puede eliminar de la tabla
-
+    Custom exception for when the client cannot be deleted from the table
     """
     def __init__(self):
-        super().__init__(f"El usuario no se pudo eliminar")
+        super().__init__(f"The client could not be deleted")
 
-class Edad_Exception(Exception):
+class AgeException(Exception):
     """ 
-
-    Excepción personalizada para la edad por debajo del mínimo o por encima del maximo
-
+    Custom exception for age below minimum or above maximum
     """
-    def __init__(self, edad):
-        super().__init__(f"La edad: {edad} es invalida, para aplicar a una hipoteca inversa se necesita tener una edad entre {EDAD_MINIMA} y {ESPERANZA_VIDA_HOMBRES}")
+    def __init__(self, age):
+        super().__init__(f"The age: {age} is invalid; to apply for a reverse mortgage, one must be between {MIN_AGE} and {MAX_LIFE_EXPECTANCY_MALES}")
 
-class None_Exception(Exception):
+class NoneException(Exception):
     """ 
-
-    Excepción personalizada para valores que sean None
-
+    Custom exception for None values
     """
     def __init__(self):
-        super().__init__(f" No pueden haber campos vacios ")
+        super().__init__(f"There cannot be empty fields")
 
-class Valor_Inmueble_Exception(Exception):
+class PropertyValueException(Exception):
     """ 
-
-    Excepción personalizada para valores del inmueble por debajo del minimo
-
+    Custom exception for property values below the minimum
     """
     def __init__(self):
-        super().__init__(f" No pueden haber campos vacios ")
+        super().__init__(f"Property value cannot be below the minimum")
 
-class Tasa_Exception(Exception):
+class InterestRateException(Exception):
     """ 
-
-    Excepción personalizada para tasa de interés por encima del máximo, por debajo del mínimo y cero
-
+    Custom exception for interest rates above the maximum, below the minimum, and zero
     """
-    def __init__(self, interes):
-        super().__init__(f"La tasa de interes: {interes} es invalida, El interes no debe ser menor a {INTERES_MINIMO} ni debe ser mayo a {INTERES_MAXIMO} ")
+    def __init__(self, interest_rate):
+        super().__init__(f"The interest rate: {interest_rate} is invalid; it should not be less than {MIN_INTEREST_RATE} or greater than {MAX_INTEREST_RATE}")
 
 
-class Controlador_Usuarios:
+class ClientController:
 
-    def Obtener_Cursor():
+    @staticmethod
+    def get_cursor():
         """
-
-        Crea la conexion a la base de datos y retorna un cursor para ejecutar instrucciones
-
+        Creates a connection to the database and returns a cursor for executing instructions
         """
         DATABASE = Secret_Config.PGDATABASE
         USER = Secret_Config.PGUSER
         PASSWORD = Secret_Config.PGPASSWORD
         HOST = Secret_Config.PGHOST
         PORT = Secret_Config.PGPORT
-        #Se realiza la conexión con la base de datos
+        # Connecting to the database
         connection = psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD, host=HOST, port=PORT)
 
-        # Todas las instrucciones se ejecutan a tavés de un cursor
+        # All instructions are executed through a cursor
         cursor = connection.cursor()
         return cursor
     
-    def Crear_Tabla():
+    @staticmethod
+    def create_table():
         """ 
-
-        Crea la tabla de usuarios en la BD 
-
+        Creates the clients table in the database 
         """
         try:
-            #Se obtiene el cursor para tener la conexión con la base de datos
-            cursor = Controlador_Usuarios.Obtener_Cursor()
+            # Get the cursor for the database connection
+            cursor = ClientController.get_cursor()
 
-            #Se ejecuta el query para crear la tabla en la base de datos
-            cursor.execute("""create table Usuarios (cedula varchar( 20 )  NOT NULL primary key,
-                            edad varchar( 2 ) not null,
-                            estado_civil text not null,
-                            edad_conyugue varchar( 2 ),
-                            sexo_conyugue text,
-                           valor_inmueble varchar( 20 ) not null,
-                           tasa_interes varchar( 4 ) not null)
-                        """)
+            # Execute the query to create the table in the database
+            cursor.execute("""CREATE TABLE Clients (id_number VARCHAR(20) NOT NULL PRIMARY KEY,
+                                                    age VARCHAR(2) NOT NULL,
+                                                    marital_status TEXT NOT NULL,
+                                                    spouse_age VARCHAR(2),
+                                                    spouse_gender TEXT,
+                                                    property_value VARCHAR(20) NOT NULL,
+                                                    interest_rate VARCHAR(4) NOT NULL)
+                            """)
             
-            # Confirma los cambios realizados en la base de datos
-            # Si no se llama, los cambios no quedan aplicados
+            # Confirm changes made to the database
             cursor.connection.commit()
-            print("TABLA CREADA CORRECTAMENTE")
+            print("TABLE CREATED SUCCESSFULLY")
             print("\n")
         except:
-             #Si llega aquí es porque la tabla ya existe y no se pudo crear
-             cursor.connection.rollback()
-             print("LA TABLA YA EXISTE")
-             print("\n")
-             return "Tabla Existente"
-        
-    def Limpiar_Tabla():
-            """ 
-            
-            Borra la tabla de usuarios de la BD 
-            
-            """
-            #Se obtiene el cursor para tener la conexión con la base de datos
-            cursor = Controlador_Usuarios.Obtener_Cursor()
-
-            #Se ejecuta el query para eliminar los registros que hay en la tabla
-            cursor.execute("""delete from Usuarios""" )
-
-            # Confirma los cambios realizados en la base de datos
-            # Si no se llama, los cambios no quedan aplicados
-            cursor.connection.commit()
-            print("REGISTROS ELIMINADOS EXITOSAMENTE")
+            # If we get here, it means the table already exists and could not be created
+            cursor.connection.rollback()
+            print("THE TABLE ALREADY EXISTS")
             print("\n")
+            return "Table Exists"
         
-    def Insertar_Usuario( usuario : Usuario ):
-            """ 
-
-            Recibe una instancia de la clase Usuario y la inserta en la tabla respectiva
-            
-            """
-            #Se obtiene el cursor para tener la conexión con la base de datos
-            cursor = Controlador_Usuarios.Obtener_Cursor()
-
-            Controlador_Usuarios.verificarValores_vacios(usuario.cedula, usuario.estado_civil, usuario.edad, usuario.valor_inmueble, usuario.tasa_interes)
-            Controlador_Usuarios.verificarEdad(int(usuario.edad))
-            Controlador_Usuarios.verificarInmueble(float(usuario.valor_inmueble))
-            Controlador_Usuarios.verificarInteres(float(usuario.tasa_interes))
-
-            try:
-
-                #Condicional para saber si el usuario tiene conyugue
-                if (usuario.estado_civil.title() == "Casado" or usuario.estado_civil.title() == "Casada"): 
-                    
-                    #Si la condición anterior se cumple, insertan los datos del usuario y los datos del conyugue
-                    cursor.execute( f"""insert into Usuarios (cedula, edad, estado_civil, edad_conyugue, sexo_conyugue, valor_inmueble, tasa_interes)
-                                        values('{usuario.cedula}', '{usuario.edad}', '{usuario.estado_civil}', '{usuario.edad_conyugue}', '{usuario.sexo_conyugue}', '{usuario.valor_inmueble}', '{usuario.tasa_interes}')""" )
-
-                    # Confirma los cambios realizados en la base de datos
-                    # Si no se llama, los cambios no quedan aplicados
-                    cursor.connection.commit()
-                    print("USUARIO INSERTADO EXITOSAMENTE")
-                    print("\n")
-
-                else:
-                    
-                    #Si la condición anterior no se cumple, insertan solo los datos del usuario
-                    cursor.execute( f"""insert into Usuarios (cedula, edad, estado_civil, valor_inmueble, tasa_interes)
-                                        values('{usuario.cedula}', '{usuario.edad}', '{usuario.estado_civil}', '{usuario.valor_inmueble}', '{usuario.tasa_interes}')""" )
-
-                    # Confirma los cambios realizados en la base de datos
-                    # Si no se llama, los cambios no quedan aplicados
-                    cursor.connection.commit()
-                    print("USUARIO INSERTADO EXITOSAMENTE")
-                    print("\n")
-                     
-            except:
-                 cursor.connection.rollback()
-                 raise Usuario_No_Insertado_Exception()
-    
-    def Buscar_Usuario( cedula_Buscada ):
+    @staticmethod
+    def clear_table():
         """ 
-
-        Trae un usuario de la tabla de usuarios por la cedula 
-        
+        Deletes all records from the clients table in the database 
         """
-        #Se obtiene el cursor para tener la conexión con la base de datos
-        cursor = Controlador_Usuarios.Obtener_Cursor()
+        # Get the cursor for the database connection
+        cursor = ClientController.get_cursor()
 
-        #Se ejecuta el query para buscar el usuario por su cédula
-        cursor.execute(f"""select cedula, edad, estado_civil, edad_conyugue, sexo_conyugue, valor_inmueble, tasa_interes
-                        from usuarios where cedula = '{cedula_Buscada}'""" )
+        # Execute the query to delete all records from the table
+        cursor.execute("""DELETE FROM Clients""" )
+
+        # Confirm changes made to the database
+        cursor.connection.commit()
+        print("RECORDS DELETED SUCCESSFULLY")
+        print("\n")
         
-        #Se obtiene cada campo del usuario
-        fila = cursor.fetchone()
-        resultado = Usuario( cedula=fila[0], edad=fila[1], estado_civil=fila[2],edad_conyugue=fila[3],
-                            sexo_conyugue=fila[4], valor_inmueble=fila[5], tasa_interes=fila[6])
-        #Se muestran los datos obtenidos
-        print(resultado)
-        return resultado
-    
-    def Eliminar_Usuario( cedula_buscada ):
+    @staticmethod
+    def insert_client(client: Client):
         """ 
-
-        Elimina un usuario de la tabla Usuarios
-        
+        Receives an instance of the Client class and inserts it into the respective table
         """
-        #Se obtiene el cursor para tener la conexión con la base de datos
-        cursor = Controlador_Usuarios.Obtener_Cursor()
+        # Get the cursor for the database connection
+        cursor = ClientController.get_cursor()
+
+        ClientController.verify_empty_fields(client.id_number, client.marital_status, client.age, client.property_value, client.interest_rate)
+        ClientController.verify_age(int(client.age))
+        ClientController.verify_property(float(client.property_value))
+        ClientController.verify_interest(float(client.interest_rate))
+
         try:
-            cursor.execute(f"""delete from Usuarios where cedula='{cedula_buscada}'""")
-            cursor.connection.commit()
-            print("USUARIO ELIMINADO CORRECTAMENTE")
+            # Conditional to check if the client has a spouse
+            if client.marital_status.title() in ["Married", "Wedded"]: 
+                # If the condition is met, insert the client's and spouse's data
+                cursor.execute(f"""INSERT INTO Clients (id_number, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate)
+                                   VALUES ('{client.id_number}', '{client.age}', '{client.marital_status}', '{client.spouse_age}', '{client.spouse_gender}', '{client.property_value}', '{client.interest_rate}')""")
 
-        except:
-             raise Usuario_No_Eliminado_Exception()
-             
-         
-
-    def Actualizar_Usuario( cedula_buscada, datos_actualizar: Usuario ):
-        """ 
-
-        Trae un usuario de la tabla de usuarios por la cedula y actualiza sus valores
-        
-        """
-        #Se obtiene el cursor para tener la conexión con la base de datos
-        cursor = Controlador_Usuarios.Obtener_Cursor()
-        try:
-            #Condicional para saber si se quiere actualizar la cédula del usuario
-            if (datos_actualizar.cedula != None):
-                cursor.execute(f"""update Usuarios set cedula='{datos_actualizar.cedula}' where cedula ='{cedula_buscada}'""")
+                # Confirm changes made to the database
                 cursor.connection.commit()
-                print("CEDULA ACTUALIZADA CORRECTAMENTE")
+                print("CLIENT INSERTED SUCCESSFULLY")
+                print("\n")
 
-            #Condicional para saber si se quiere actualizar el estado civil del usuario
-            elif (datos_actualizar.estado_civil != None):
+            else:
+                # If the condition is not met, insert only the client's data
+                cursor.execute(f"""INSERT INTO Clients (id_number, age, marital_status, property_value, interest_rate)
+                                   VALUES ('{client.id_number}', '{client.age}', '{client.marital_status}', '{client.property_value}', '{client.interest_rate}')""")
 
-                #Condicional para saber si el usuario consiguió conyugue
-                if (datos_actualizar.estado_civil.title() == "Casado"):  
-                    cursor.execute(f"""update Usuarios set estado_civil='{datos_actualizar.estado_civil}' where cedula ='{cedula_buscada}'""")
+                # Confirm changes made to the database
+                cursor.connection.commit()
+                print("CLIENT INSERTED SUCCESSFULLY")
+                print("\n")
+                     
+        except:
+            cursor.connection.rollback()
+            raise ClientNotInsertedException()
+    
+    @staticmethod
+    def find_client(id_number):
+        """ 
+        Fetches a client from the clients table by ID number 
+        """
+        # Get the cursor for the database connection
+        cursor = ClientController.get_cursor()
 
-                    #Condicional para Comprobar que estén correctos los datos del conyugue
-                    if (datos_actualizar.edad_conyugue != None and datos_actualizar.sexo_conyugue != None):
-                        cursor.execute(f"""update Usuarios set edad_conyugue='{datos_actualizar.edad_conyugue}', sexo_conyugue='{datos_actualizar.sexo_conyugue}' where cedula ='{cedula_buscada}'""")
-                        cursor.connection.commit()
-                        print("ESTADO CIVIL ACTUALIZADO CORRECTAMENTE") 
-
-                else:
-                    cursor.execute(f"""update Usuarios set estado_civil='soltero', edad_conyugue='', sexo_conyugue='' where cedula ='{cedula_buscada}'""")
-                    cursor.connection.commit()
-                    print("ESTADO CIVIL ACTUALIZADO CORRECTAMENTE") 
-            
-            #Condicional para saber si se quiere actualizar el valor del inmueble del usuario
-            elif (datos_actualizar.valor_inmueble != None):
-                    cursor.execute(f"""update Usuarios set valor_inmueble='{datos_actualizar.valor_inmueble}' where cedula ='{cedula_buscada}'""")
-                    cursor.connection.commit()
-                    print("VALOR DEL INMUEBLE ACTUALIZADO CORRECTAMENTE") 
-
-            #Condicional para saber si se quiere actualizar la tasa de interes
-            elif (datos_actualizar.tasa_interes != None):
-                    cursor.execute(f"""update Usuarios set tasa_interes='{datos_actualizar.tasa_interes}' where cedula ='{cedula_buscada}'""")
-                    cursor.connection.commit()
-                    print("TASA DE INTERES ACTUALIZADA CORRECTAMENTE") 
+        # Execute the query to find the client by ID number
+        cursor.execute(f"""SELECT id_number, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate
+                           FROM Clients WHERE id_number = '{id_number}'""" )
+        
+        # Get each field of the client
+        row = cursor.fetchone()
+        result = Client(id_number=row[0], age=row[1], marital_status=row[2], spouse_age=row[3],
+                        spouse_gender=row[4], property_value=row[5], interest_rate=row[6])
+        # Show the obtained data
+        print(result)
+        return result
+    
+    @staticmethod
+    def delete_client(id_number):
+        """ 
+        Deletes a client from the Clients table
+        """
+        # Get the cursor for the database connection
+        cursor = ClientController.get_cursor()
+        try:
+            cursor.execute(f"""DELETE FROM Clients WHERE id_number='{id_number}'""")
+            cursor.connection.commit()
+            print("CLIENT DELETED SUCCESSFULLY")
 
         except:
-             raise Usuario_No_Actualizado_Exception()
-        
-    # Verifica que ningun campo haya quedado vacio
-    def verificarValores_vacios(cedula, estado_civil, edad, valor_inmueble, tasa_interes):
-        if cedula == None or estado_civil == None or edad == None or valor_inmueble == None or tasa_interes == None:
-            raise None_Exception()
+            raise ClientNotDeletedException()
+             
+    @staticmethod
+    def update_client(id_number, updated_data: Client):
+        """ 
+        Fetches a client from the clients table by ID number and updates its values
+        """
+        # Get the cursor for the database connection
+        cursor = ClientController.get_cursor()
+        try:
+            # Conditional to check if the ID number of the client is to be updated
+            if updated_data.id_number is not None:
+                cursor.execute(f"""UPDATE Clients SET id_number='{updated_data.id_number}' WHERE id_number='{id_number}'""")
+                cursor.connection.commit()
+                print("ID NUMBER UPDATED SUCCESSFULLY")
 
-    # Verifica que la edad del usuario no esté por debajo del limite
-    def verificarEdad(edad):
-        if edad < EDAD_MINIMA or edad > ESPERANZA_VIDA_HOMBRES:
-            raise Edad_Exception(edad)
+            # Conditional to check if the marital status of the client is to be updated
+            elif updated_data.marital_status is not None:
+                # Conditional to check if the client has a spouse
+                if updated_data.marital_status.title() == "Married":  
+                    cursor.execute(f"""UPDATE Clients SET marital_status='{updated_data.marital_status}' WHERE id_number='{id_number}'""")
+
+                    # Conditional to verify that the spouse's data is correct
+                    if updated_data.spouse_age is not None and updated_data.spouse_gender is not None:
+                        cursor.execute(f"""UPDATE Clients SET spouse_age='{updated_data.spouse_age}', spouse_gender='{updated_data.spouse_gender}' WHERE id_number='{id_number}'""")
+                        cursor.connection.commit()
+                        print("MARITAL STATUS UPDATED SUCCESSFULLY") 
+
+                else:
+                    cursor.execute(f"""UPDATE Clients SET marital_status='single', spouse_age='', spouse_gender='' WHERE id_number='{id_number}'""")
+                    cursor.connection.commit()
+                    print("MARITAL STATUS UPDATED SUCCESSFULLY") 
+            
+            # Conditional to check if the property value of the client is to be updated
+            elif updated_data.property_value is not None:
+                cursor.execute(f"""UPDATE Clients SET property_value='{updated_data.property_value}' WHERE id_number='{id_number}'""")
+                cursor.connection.commit()
+                print("PROPERTY VALUE UPDATED SUCCESSFULLY") 
+
+            # Conditional to check if the interest rate is to be updated
+            elif updated_data.interest_rate is not None:
+                cursor.execute(f"""UPDATE Clients SET interest_rate='{updated_data.interest_rate}' WHERE id_number='{id_number}'""")
+                cursor.connection.commit()
+                print("INTEREST RATE UPDATED SUCCESSFULLY") 
+
+        except:
+            raise ClientNotUpdatedException()
         
-    # Verifica que el valor del inmueble del usuario no esté por debajo del limite
-    def verificarInmueble(valor_inmueble):
-        if valor_inmueble <  VALOR_MINIMO_INMUEBLE:
-            raise Valor_Inmueble_Exception()
+    # Verifies that no field is left empty
+    @staticmethod
+    def verify_empty_fields(id_number, marital_status, age, property_value, interest_rate):
+        if id_number is None or marital_status is None or age is None or property_value is None or interest_rate is None:
+            raise NoneException()
+
+    # Verifies that the age of the client is not below the limit
+    @staticmethod
+    def verify_age(age):
+        if age < MIN_AGE or age > MAX_LIFE_EXPECTANCY_MALES:
+            raise AgeException(age)
+        
+    # Verifies that the property value of the client is not below the limit
+    @staticmethod
+    def verify_property(property_value):
+        if property_value < MIN_PROPERTY_VALUE:
+            raise PropertyValueException()
     
-    def verificarInteres(tasa_interes):
-        if tasa_interes < INTERES_MINIMO or tasa_interes > INTERES_MAXIMO:
-            raise Tasa_Exception(tasa_interes)
+    @staticmethod
+    def verify_interest(interest_rate):
+        if interest_rate < MIN_INTEREST_RATE or interest_rate > MAX_INTEREST_RATE:
+            raise InterestRateException(interest_rate)
