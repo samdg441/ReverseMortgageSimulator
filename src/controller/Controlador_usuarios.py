@@ -132,7 +132,7 @@ class ClientController:
         cursor = connection.cursor()
 
         # Execute the query to delete all records from the table
-        cursor.execute("DELETE FROM Clients")
+        cursor.execute("DELETE FROM users")
         cursor.connection.commit()
         print("RECORDS DELETED SUCCESSFULLY")
         print("\n")
@@ -190,7 +190,7 @@ class ClientController:
 
         cursor.execute("""
             SELECT id, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate
-            FROM Clients WHERE id = %s""", (id,))
+            FROM users WHERE id = %s""", (id,))
 
         row = cursor.fetchone()
         if row:
@@ -212,7 +212,7 @@ class ClientController:
         cursor = connection.cursor()
 
         try:
-            cursor.execute("DELETE FROM Clients WHERE id = %s", (id,))
+            cursor.execute("DELETE FROM users WHERE id = %s", (id,))
             cursor.connection.commit()
             print("CLIENT DELETED SUCCESSFULLY")
         except Exception as e:
@@ -233,33 +233,33 @@ class ClientController:
         try:
             # Update client's ID number if it's provided
             if updated_data.id:
-                cursor.execute("UPDATE Clients SET id = %s WHERE id = %s", (updated_data.id, id))
+                cursor.execute("UPDATE users SET id = %s WHERE id = %s", (updated_data.id, id))
                 connection.commit()
                 print("ID NUMBER UPDATED SUCCESSFULLY")
 
             # Update marital status
             if updated_data.marital_status:
                 if updated_data.marital_status.title() == "Married":  
-                    cursor.execute("UPDATE Clients SET marital_status = %s WHERE id = %s", (updated_data.marital_status, id))
+                    cursor.execute("UPDATE users SET marital_status = %s WHERE id = %s", (updated_data.marital_status, id))
                     if updated_data.spouse_age and updated_data.spouse_gender:
-                        cursor.execute("UPDATE Clients SET spouse_age = %s, spouse_gender = %s WHERE id = %s", 
+                        cursor.execute("UPDATE users SET spouse_age = %s, spouse_gender = %s WHERE id = %s", 
                                        (updated_data.spouse_age, updated_data.spouse_gender, id))
                     connection.commit()
                     print("MARITAL STATUS UPDATED SUCCESSFULLY") 
                 else:
-                    cursor.execute("UPDATE Clients SET marital_status = 'Single', spouse_age = NULL, spouse_gender = NULL WHERE id = %s", (id,))
+                    cursor.execute("UPDATE users SET marital_status = 'Single', spouse_age = NULL, spouse_gender = NULL WHERE id = %s", (id,))
                     connection.commit()
                     print("MARITAL STATUS UPDATED SUCCESSFULLY") 
             
             # Update property value
             if updated_data.property_value:
-                cursor.execute("UPDATE Clients SET property_value = %s WHERE id = %s", (updated_data.property_value, id))
+                cursor.execute("UPDATE users SET property_value = %s WHERE id = %s", (updated_data.property_value, id))
                 connection.commit()
                 print("PROPERTY VALUE UPDATED SUCCESSFULLY") 
 
             # Update interest rate
             if updated_data.interest_rate:
-                cursor.execute("UPDATE Clients SET interest_rate = %s WHERE id = %s", (updated_data.interest_rate, id))
+                cursor.execute("UPDATE users SET interest_rate = %s WHERE id = %s", (updated_data.interest_rate, id))
                 connection.commit()
                 print("INTEREST RATE UPDATED SUCCESSFULLY") 
 
