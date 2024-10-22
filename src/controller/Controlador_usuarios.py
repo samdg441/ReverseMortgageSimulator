@@ -101,7 +101,7 @@ class ClientController:
 
             # Execute the query to create the table in the database
             cursor.execute("""CREATE TABLE Users (
-                                id_number VARCHAR(20) NOT NULL PRIMARY KEY,
+                                id VARCHAR(20) NOT NULL PRIMARY KEY,
                                 age VARCHAR(2) NOT NULL,
                                 marital_status TEXT NOT NULL,
                                 spouse_age VARCHAR(2),
@@ -147,7 +147,7 @@ class ClientController:
         connection = ClientController.get_connection()
         cursor = connection.cursor()
 
-        ClientController.verify_empty_fields(client.id_number, client.marital_status, client.age, client.property_value, client.interest_rate)
+        ClientController.verify_empty_fields(client.id, client.marital_status, client.age, client.property_value, client.interest_rate)
         ClientController.verify_age(int(client.age))
         ClientController.verify_property(float(client.property_value))
         ClientController.verify_interest(float(client.interest_rate))
@@ -157,15 +157,15 @@ class ClientController:
             if client.marital_status.title() in ["Married", "Wedded"]: 
                 # Insert the client's and spouse's data
                 cursor.execute("""
-                    INSERT INTO Clients (id_number, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate)
+                    CLIENT (id, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate)
                     VALUES (%s, %s, %s, %s, %s, %s, %s)""", 
-                    (client.id_number, client.age, client.marital_status, client.spouse_age, client.spouse_gender, client.property_value, client.interest_rate))
+                    (client.id, client.age, client.marital_status, client.spouse_age, client.spouse_gender, client.property_value, client.interest_rate))
             else:
                 # Insert only the client's data
                 cursor.execute("""
-                    INSERT INTO Clients (id_number, age, marital_status, property_value, interest_rate)
+                    INSERT INTO users (id, age, marital_status, property_value, interest_rate)
                     VALUES (%s, %s, %s, %s, %s)""", 
-                    (client.id_number, client.age, client.marital_status, client.property_value, client.interest_rate))
+                    (client.id, client.age, client.marital_status, client.property_value, client.interest_rate))
 
             # Confirm changes made to the database
             cursor.connection.commit()
@@ -181,7 +181,7 @@ class ClientController:
             connection.close()
     
     @staticmethod
-    def find_client(id_number):
+    def find_client(id):
         """ 
         Fetches a client from the clients table by ID number 
         """
@@ -189,12 +189,12 @@ class ClientController:
         cursor = connection.cursor()
 
         cursor.execute("""
-            SELECT id_number, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate
-            FROM Clients WHERE id_number = %s""", (id_number,))
+            SELECT id, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate
+            FROM Clients WHERE id = %s""", (id,))
 
         row = cursor.fetchone()
         if row:
-            result = User(id_number=row[0], age=row[1], marital_status=row[2], spouse_age=row[3],
+            result = User(id=row[0], age=row[1], marital_status=row[2], spouse_age=row[3],
                           spouse_gender=row[4], property_value=row[5], interest_rate=row[6])
             print(result)
             return result
@@ -204,7 +204,7 @@ class ClientController:
 
     
     @staticmethod
-    def delete_client(id_number):
+    def delete_client(id):
         """ 
         Deletes a client from the Clients table
         """
@@ -212,7 +212,7 @@ class ClientController:
         cursor = connection.cursor()
 
         try:
-            cursor.execute("DELETE FROM Clients WHERE id_number = %s", (id_number,))
+            cursor.execute("DELETE FROM Clients WHERE id = %s", (id,))
             cursor.connection.commit()
             print("CLIENT DELETED SUCCESSFULLY")
         except Exception as e:
@@ -223,7 +223,7 @@ class ClientController:
             connection.close()
              
     @staticmethod
-    def update_client(id_number, updated_data: User):
+    def update_client(id, updated_data: User):
         """ 
         Updates the values of a client in the clients table by ID number
         """
@@ -232,34 +232,34 @@ class ClientController:
 
         try:
             # Update client's ID number if it's provided
-            if updated_data.id_number:
-                cursor.execute("UPDATE Clients SET id_number = %s WHERE id_number = %s", (updated_data.id_number, id_number))
+            if updated_data.id:
+                cursor.execute("UPDATE Clients SET id = %s WHERE id = %s", (updated_data.id, id))
                 connection.commit()
                 print("ID NUMBER UPDATED SUCCESSFULLY")
 
             # Update marital status
             if updated_data.marital_status:
                 if updated_data.marital_status.title() == "Married":  
-                    cursor.execute("UPDATE Clients SET marital_status = %s WHERE id_number = %s", (updated_data.marital_status, id_number))
+                    cursor.execute("UPDATE Clients SET marital_status = %s WHERE id = %s", (updated_data.marital_status, id))
                     if updated_data.spouse_age and updated_data.spouse_gender:
-                        cursor.execute("UPDATE Clients SET spouse_age = %s, spouse_gender = %s WHERE id_number = %s", 
-                                       (updated_data.spouse_age, updated_data.spouse_gender, id_number))
+                        cursor.execute("UPDATE Clients SET spouse_age = %s, spouse_gender = %s WHERE id = %s", 
+                                       (updated_data.spouse_age, updated_data.spouse_gender, id))
                     connection.commit()
                     print("MARITAL STATUS UPDATED SUCCESSFULLY") 
                 else:
-                    cursor.execute("UPDATE Clients SET marital_status = 'Single', spouse_age = NULL, spouse_gender = NULL WHERE id_number = %s", (id_number,))
+                    cursor.execute("UPDATE Clients SET marital_status = 'Single', spouse_age = NULL, spouse_gender = NULL WHERE id = %s", (id,))
                     connection.commit()
                     print("MARITAL STATUS UPDATED SUCCESSFULLY") 
             
             # Update property value
             if updated_data.property_value:
-                cursor.execute("UPDATE Clients SET property_value = %s WHERE id_number = %s", (updated_data.property_value, id_number))
+                cursor.execute("UPDATE Clients SET property_value = %s WHERE id = %s", (updated_data.property_value, id))
                 connection.commit()
                 print("PROPERTY VALUE UPDATED SUCCESSFULLY") 
 
             # Update interest rate
             if updated_data.interest_rate:
-                cursor.execute("UPDATE Clients SET interest_rate = %s WHERE id_number = %s", (updated_data.interest_rate, id_number))
+                cursor.execute("UPDATE Clients SET interest_rate = %s WHERE id = %s", (updated_data.interest_rate, id))
                 connection.commit()
                 print("INTEREST RATE UPDATED SUCCESSFULLY") 
 
@@ -271,8 +271,8 @@ class ClientController:
             connection.close()
         
     @staticmethod
-    def verify_empty_fields(id_number, marital_status, age, property_value, interest_rate):
-        if id_number is None or marital_status is None or age is None or property_value is None or interest_rate is None:
+    def verify_empty_fields(id, marital_status, age, property_value, interest_rate):
+        if id is None or marital_status is None or age is None or property_value is None or interest_rate is None:
             raise NoneException()
 
     @staticmethod

@@ -1,10 +1,11 @@
 # Lo importamos para poder incluir la ruta de busqueda python
 import sys
 sys.path.append("src")
+sys.path.append(".")
 
 # Se importa el modulo donde se realizarán los procesos
-from controller.Controlador_Usuarios import Controlador_Usuarios
-from model.Usuario import Usuario
+from controller.Controlador_usuarios import ClientController
+from Model.User import User
 
 # Se le da una bienvenida al usuario y se le muestra un menú con las opciones
 def Bienvenida():
@@ -18,74 +19,69 @@ def Bienvenida():
     return desiciones(opcion)
 
 def desiciones(opcion):
-    # Se hace uso del metodo try para lanzar una excepción si algo falla
     try:
-        # Se usa el ciclo while para verificar cual opción escogio el usuario
         while opcion != 0:
-            # Se verifica si la opción escogida por el usuario no está definida
             if opcion < 0 or opcion > 1:
                 print("------------------------------------------------------------------")
                 print("                  EL BANCO            ")
                 print("La opción ingresada no es correcta, intente de nuevo")
                 print("-------------------------------------------------------------------")
-                # Se llama nuevamente al metodo de Bienvenida para reiniciar el proceso
-                Bienvenida()
-            # Se verifica si el usuario quiere calcular una hipoteca inversa
+                opcion = int(input("Elija una opción: "))  # Pedir nuevamente la opción en lugar de llamar a Bienvenida()
+
             if opcion == 1:
                 print("---------------------------------------------------------------------")
                 print("                     EL BANCO                 ")
                 print("DATOS PERSONALES")
-                # Se obtienen los datos de entrada
-                cedula = int(input("Por favor ingrese su cedula: "))
+                cedula = int(input("Por favor ingrese su cédula: "))
                 edad = int(input("Por favor ingrese su edad actual: "))
-                estado_civil = input("Por favor ingrese su estado civil: ")
-                estado_civil = estado_civil.title()
-                #Condicional para saber si el usuario tiene conyugue
+                estado_civil = input("Por favor ingrese su estado civil: ").title()
+                
+                # Verificar si está casado
                 if estado_civil == "Casado" or estado_civil == "Casada":
-                    #Si la condición anterior se cumple, se obtienen los datos del conyugue
-                    edad_conyugue = int(input("Por favor ingrese la edad de su conyugue: "))
-                    sexo_conyugue = input("Por favor ingrese el genero de su conyugue: ")
+                    edad_conyugue = int(input("Por favor ingrese la edad de su cónyuge: "))
+                    sexo_conyugue = input("Por favor ingrese el género de su cónyuge: ")
                 else:
-                    #Si la condición anterior no se cumple, se definen los datos del conyugue como None
                     edad_conyugue = None
                     sexo_conyugue = None
+                
+                # Pedir el valor de la propiedad
+                valor_propiedad = float(input("Por favor ingrese el valor de su propiedad: "))
+                # Pedir la tasa de interés
+                tasa_interes = float(input("Por favor ingrese la tasa de interés: "))
+
                 print("-------------------------------------------------------------------------")
+                
+                # Crear el usuario con los nuevos datos
+                usuario = User(cedula, edad, estado_civil, edad_conyugue, sexo_conyugue, valor_propiedad, tasa_interes)
+                ClientController.insert_client(usuario)
+                opcion = 0  # Volvemos a la opción para salir o reiniciar
 
-                #Se crea el usuario en la base de datos
-                usuario = Usuario(cedula, edad, estado_civil, edad_conyugue, sexo_conyugue)
-                Controlador_Usuarios.Insertar_Usuario(usuario)
-                # Se llama nuevamente al metodo de Bienvenida para reiniciar el proceso
-                Bienvenida()
-
-        # Se le da al usuario un mensaje de despedida al usuario cuando finaliza todo el proceso
         print("------------------------------------------------------------------")
         print("                  EL BANCO            ")
         print("Gracias por visitarnos, vuelva pronto")
         print("-------------------------------------------------------------------")
         return
-    # Se lanza un mensaje de error cuando algo falla
     except ValueError:
         print("------------------------------------------------------------------")
         print("                  EL BANCO            ")
         print("Hubo un ERROR, revisa que los datos ingresados sean correctos")
         print("-------------------------------------------------------------------")
-        # Se llama nuevamente al metodo de Bienvenida para reiniciar el proceso
-        Bienvenida()
     except Exception as exc:
         print("------------------------------------------------------------------")
         print("                  EL BANCO            ")
         print(f"{exc}, intentalo nuevamente")
         print("-------------------------------------------------------------------")
-        # Se llama nuevamente al metodo de Bienvenida para reiniciar el proceso
-        Bienvenida()
 
 #Condicional para comprobar si la tabla "Usuarios" ya está creada
-if Controlador_Usuarios.Crear_Tabla == "Tabla Existente":
+if ClientController.create_table == "Tabla Existente":
     # Si la condición anterior se cumple, solo se llama la funcion para dar inicio al programa
     Bienvenida()
 
 else:
     #Si la condición anterior no se cumple, se crea la base de datos
-    Controlador_Usuarios.Crear_Tabla()
+    ClientController.create_table()
     # Se llama la funcion para dar inicio al programa
+    Bienvenida()
+
+if __name__ == "__main__":
     Bienvenida()

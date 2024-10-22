@@ -4,8 +4,8 @@ class User:
 
     Represents a Reverse Mortgage user in the application
     """
-    def __init__(self, id_number, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate):
-        self.id_number = id_number
+    def __init__(self, id, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate):
+        self.id = id
         self.age = age
         self.marital_status = marital_status
         self.spouse_age = spouse_age
@@ -20,17 +20,17 @@ class User:
         # Conditional to check if the user has a spouse
         if (self.marital_status.title() == "Married"):
             # If the previous condition is met, return all the user's data
-            return str(f"ID NUMBER: {self.id_number} \n AGE: {self.age} \n MARITAL STATUS: {self.marital_status} \n SPOUSE AGE: {self.spouse_age} \n SPOUSE GENDER: {self.spouse_gender} ")
+            return str(f"ID NUMBER: {self.id} \n AGE: {self.age} \n MARITAL STATUS: {self.marital_status} \n SPOUSE AGE: {self.spouse_age} \n SPOUSE GENDER: {self.spouse_gender} ")
 
         else:
             # If the previous condition is not met, return the user's data without spouse-related details
-            return str(f"ID NUMBER: {self.id_number} \n AGE: {self.age} \n MARITAL STATUS: {self.marital_status} ")
+            return str(f"ID NUMBER: {self.id} \n AGE: {self.age} \n MARITAL STATUS: {self.marital_status} ")
 
     def is_equal(self, compare_with):
         """
         Compares the current object with another instance of the User class
         """
-        assert(self.id_number == compare_with.id_number)
+        assert(self.id == compare_with.id)
         assert(self.age == compare_with.age)
         assert(self.marital_status == compare_with.marital_status)
         assert(self.spouse_age == compare_with.spouse_age)
