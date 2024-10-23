@@ -20,7 +20,7 @@ Posteriormente, el sistema se encargará de realizar los cálculos necesarios y 
 
 El proyecto se divide en dos carpetas principales, una carpeta `src` y una carpeta `tests`. La carpeta `src` contiene un módulo en el que se encuentra un archivo con la distribución de las clases y métodos, y otro es el módulo en el que se encuentra la ejecución del programa por consola. Por otro lado, la carpeta `tests` contiene cada uno de los `tests` unitarios (casos normales, casos extraordinarios y casos de error). Además, hay 3 archivos de la estructura general de un proyecto (.gitignore, README.md y License).
 
-## Instalación y Uso
+## Instalación y Uso de la base de datos
 
 ### Clonar el Repositorio:
 
