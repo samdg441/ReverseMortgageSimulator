@@ -100,24 +100,23 @@ class ClientController:
             connection = ClientController.get_connection()
             cursor = connection.cursor()
 
-            # Execute the query to create the table in the database
-            cursor.execute("""CREATE TABLE Users (
-                                id VARCHAR(20) NOT NULL PRIMARY KEY,
-                                age VARCHAR(2) NOT NULL,
-                                marital_status TEXT NOT NULL,
-                                spouse_age VARCHAR(2),
-                                spouse_gender TEXT,
-                                property_value VARCHAR(20) NOT NULL,
-                                interest_rate VARCHAR(4) NOT NULL)
-                            """)
+            # Query with sql.SQL
+            cursor.execute(sql.SQL("""
+                CREATE TABLE IF NOT EXISTS Users (
+                    id VARCHAR(20) NOT NULL PRIMARY KEY,
+                    age VARCHAR(2) NOT NULL,
+                    marital_status TEXT NOT NULL,
+                    spouse_age VARCHAR(2),
+                    spouse_gender TEXT,
+                    property_value VARCHAR(20) NOT NULL,
+                    interest_rate VARCHAR(4) NOT NULL
+                )
+            """))
             
-            # Confirm changes made to the database
-            cursor.connection.commit()
-            print("TABLE CREATED SUCCESSFULLY")
-            print("\n")
+            connection.commit()
+            print("TABLE CREATED SUCCESSFULLY\n")
         except psycopg2.errors.DuplicateTable:
-            print("THE TABLE ALREADY EXISTS")
-            print("\n")
+            print("THE TABLE ALREADY EXISTS\n")
         except Exception as e:
             print(f"Error creating table: {e}")
         finally:
@@ -155,24 +154,27 @@ class ClientController:
 
         try:
             # Conditional to check if the client has a spouse
-            if client.marital_status.title() in ["Married", "Wedded"]: 
-                # Insert the client's and spouse's data
-                cursor.execute("""
-                    CLIENT (id, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)""", 
-                    (client.id, client.age, client.marital_status, client.spouse_age, client.spouse_gender, client.property_value, client.interest_rate))
+            if client.marital_status.title() in ["Married", "Wedded","Casado","Casada"]: 
+                # Insert the client's and spouse's data with sql.SQL
+                cursor.execute(
+                    sql.SQL("""
+                        INSERT INTO users (id, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """),
+                    (client.id, client.age, client.marital_status, client.spouse_age, client.spouse_gender, client.property_value, client.interest_rate)
+                )
             else:
-                # Insert only the client's data
-                cursor.execute("""
-                    INSERT INTO users (id, age, marital_status, property_value, interest_rate)
-                    VALUES (%s, %s, %s, %s, %s)""", 
-                    (client.id, client.age, client.marital_status, client.property_value, client.interest_rate))
+                # Insert only the client's data with sql.SQL
+                cursor.execute(
+                    sql.SQL("""
+                        INSERT INTO users (id, age, marital_status, property_value, interest_rate)
+                        VALUES (%s, %s, %s, %s, %s)
+                    """),
+                    (client.id, client.age, client.marital_status, client.property_value, client.interest_rate)
+                )
 
-            # Confirm changes made to the database
-            cursor.connection.commit()
-            print("CLIENT INSERTED SUCCESSFULLY")
-            print("\n")
-                     
+            connection.commit()
+            print("CLIENT INSERTED SUCCESSFULLY\n")
         except Exception as e:
             connection.rollback()
             print(f"Error inserting client: {e}")
@@ -189,19 +191,30 @@ class ClientController:
         connection = ClientController.get_connection()
         cursor = connection.cursor()
 
-        cursor.execute("""
-            SELECT id, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate
-            FROM users WHERE id = %s""", (id,))
+        try:
+            # Using sql.SQL for query
+            cursor.execute(
+                sql.SQL("""
+                    SELECT id, age, marital_status, spouse_age, spouse_gender, property_value, interest_rate
+                    FROM users WHERE id = %s
+                """),
+                (id,)
+            )
 
-        row = cursor.fetchone()
-        if row:
-            result = User(id=row[0], age=row[1], marital_status=row[2], spouse_age=row[3],
-                        spouse_gender=row[4], property_value=row[5], interest_rate=row[6])
-            return result
-        else:
-            print("Client not found")
+            row = cursor.fetchone()
+            if row:
+                result = User(id=row[0], age=row[1], marital_status=row[2], spouse_age=row[3],
+                            spouse_gender=row[4], property_value=row[5], interest_rate=row[6])
+                return result
+            else:
+                print("Client not found")
+                return None
+        except Exception as e:
+            print(f"Error finding client: {e}")
             return None
-
+        finally:
+            cursor.close()
+            connection.close()
     
     @staticmethod
     def delete_client(id):
@@ -231,35 +244,52 @@ class ClientController:
         cursor = connection.cursor()
 
         try:
-            # Update client's ID number if it's provided
+            # Update client's ID number if it's provided using sql.SQL
             if updated_data.id:
-                cursor.execute("UPDATE users SET id = %s WHERE id = %s", (updated_data.id, id))
+                cursor.execute(
+                    sql.SQL("UPDATE users SET id = %s WHERE id = %s"),
+                    (updated_data.id, id)
+                )
                 connection.commit()
                 print("ID NUMBER UPDATED SUCCESSFULLY")
 
-            # Update marital status
+            # Update marital status with sql.SQL
             if updated_data.marital_status:
                 if updated_data.marital_status.title() == "Married":  
-                    cursor.execute("UPDATE users SET marital_status = %s WHERE id = %s", (updated_data.marital_status, id))
+                    cursor.execute(
+                        sql.SQL("UPDATE users SET marital_status = %s WHERE id = %s"),
+                        (updated_data.marital_status, id)
+                    )
                     if updated_data.spouse_age and updated_data.spouse_gender:
-                        cursor.execute("UPDATE users SET spouse_age = %s, spouse_gender = %s WHERE id = %s", 
-                                       (updated_data.spouse_age, updated_data.spouse_gender, id))
+                        cursor.execute(
+                            sql.SQL("UPDATE users SET spouse_age = %s, spouse_gender = %s WHERE id = %s"),
+                            (updated_data.spouse_age, updated_data.spouse_gender, id)
+                        )
                     connection.commit()
                     print("MARITAL STATUS UPDATED SUCCESSFULLY") 
                 else:
-                    cursor.execute("UPDATE users SET marital_status = 'Single', spouse_age = NULL, spouse_gender = NULL WHERE id = %s", (id,))
+                    cursor.execute(
+                        sql.SQL("UPDATE users SET marital_status = 'Single', spouse_age = NULL, spouse_gender = NULL WHERE id = %s"),
+                        (id,)
+                    )
                     connection.commit()
                     print("MARITAL STATUS UPDATED SUCCESSFULLY") 
             
-            # Update property value
+            # Update property value with sql.SQL
             if updated_data.property_value:
-                cursor.execute("UPDATE users SET property_value = %s WHERE id = %s", (updated_data.property_value, id))
+                cursor.execute(
+                    sql.SQL("UPDATE users SET property_value = %s WHERE id = %s"),
+                    (updated_data.property_value, id)
+                )
                 connection.commit()
                 print("PROPERTY VALUE UPDATED SUCCESSFULLY") 
 
-            # Update interest rate
+            # Update interest rate with sql.SQL
             if updated_data.interest_rate:
-                cursor.execute("UPDATE users SET interest_rate = %s WHERE id = %s", (updated_data.interest_rate, id))
+                cursor.execute(
+                    sql.SQL("UPDATE users SET interest_rate = %s WHERE id = %s"),
+                    (updated_data.interest_rate, id)
+                )
                 connection.commit()
                 print("INTEREST RATE UPDATED SUCCESSFULLY") 
 

@@ -25,6 +25,7 @@ def Bienvenida():
     return desiciones(opcion)
 
 
+
 def desiciones(opcion):
     try:
         while opcion != 0:
@@ -62,18 +63,31 @@ def desiciones(opcion):
                 usuario = User(cedula, edad, estado_civil, edad_conyugue, sexo_conyugue, valor_propiedad, tasa_interes)
                 ClientController.insert_client(usuario)
 
+            elif opcion == 2:
+                cedula = input("Ingrese la cédula del cliente que desea buscar: ")
+                cliente = ClientController.find_client(cedula)
 
+                if cliente:
+                    print(f"Cliente encontrado: {cliente}")  # Aquí se imprime usando el método __str__ de la clase User
+                else:
+                    print("Cliente no encontrado")
 
-            elif opcion == 3:
+            
+            elif opcion == 3:  # Actualizar cliente
                 cedula = input("Ingrese la cédula del cliente a actualizar: ")
+                client = ClientController.get_client(cedula)
+                if not client:
+                    print("Cliente no encontrado. Por favor, verifique la cédula e intente nuevamente.")
+                    continue
+
                 print("Ingrese los nuevos datos (dejar en blanco para no modificar):")
-                new_id = input("Nuevo ID (actual: {}): ".format(cedula)) or cedula
-                edad = input("Nueva edad (actual: {}): ".format(client.age)) or client.age
-                estado_civil = input("Nuevo estado civil (actual: {}): ".format(client.marital_status)) or client.marital_status
-                edad_conyugue = input("Nueva edad del cónyuge (actual: {}): ".format(client.spouse_age)) or client.spouse_age
-                sexo_conyugue = input("Nuevo género del cónyuge (actual: {}): ".format(client.spouse_gender)) or client.spouse_gender
-                valor_propiedad = input("Nuevo valor de la propiedad (actual: {}): ".format(client.property_value)) or client.property_value
-                tasa_interes = input("Nueva tasa de interés (actual: {}): ".format(client.interest_rate)) or client.interest_rate
+                new_id = input(f"Nuevo ID (actual: {client.id}): ") or client.id
+                edad = input(f"Nueva edad (actual: {client.age}): ") or client.age
+                estado_civil = input(f"Nuevo estado civil (actual: {client.marital_status}): ") or client.marital_status
+                edad_conyugue = input(f"Nueva edad del cónyuge (actual: {client.spouse_age}): ") or client.spouse_age
+                sexo_conyugue = input(f"Nuevo género del cónyuge (actual: {client.spouse_gender}): ") or client.spouse_gender
+                valor_propiedad = input(f"Nuevo valor de la propiedad (actual: {client.property_value}): ") or client.property_value
+                tasa_interes = input(f"Nueva tasa de interés (actual: {client.interest_rate}): ") or client.interest_rate
 
                 updated_data = User(
                     id=new_id,
@@ -107,6 +121,7 @@ def desiciones(opcion):
         print("                  EL BANCO            ")
         print(f"{exc}, intentalo nuevamente")
         print("-------------------------------------------------------------------")
+
 
 
 # Condicional para comprobar si la tabla "Usuarios" ya está creada

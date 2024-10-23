@@ -20,11 +20,11 @@ class User:
         # Conditional to check if the user has a spouse
         if (self.marital_status.title() == "Married"):
             # If the previous condition is met, return all the user's data
-            return str(f"ID NUMBER: {self.id} \n AGE: {self.age} \n MARITAL STATUS: {self.marital_status} \n SPOUSE AGE: {self.spouse_age} \n SPOUSE GENDER: {self.spouse_gender} ")
+            return str(f"ID NUMBER: {self.id} \n AGE: {self.age} \n MARITAL STATUS: {self.marital_status} \n SPOUSE AGE: {self.spouse_age} \n SPOUSE GENDER: {self.spouse_gender} \n PROPERTY_VALUE: {self.property_value} \n INTEREST_RATE: {self.interest_rate}  ")
 
         else:
             # If the previous condition is not met, return the user's data without spouse-related details
-            return str(f"ID NUMBER: {self.id} \n AGE: {self.age} \n MARITAL STATUS: {self.marital_status} ")
+            return str(f"ID NUMBER: {self.id} \n AGE: {self.age} \n MARITAL STATUS: {self.marital_status} \n PROPERTY_VALUE: {self.property_value} \n INTEREST_RATE: {self.interest_rate} ")
 
     def is_equal(self, compare_with):
         """
