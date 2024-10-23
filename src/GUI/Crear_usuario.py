@@ -14,7 +14,7 @@ def Bienvenida():
     print("-------------------------------------------")
     print("    BIENVENIDO AL BANCO   ")
     print("¿Qué deseas hacer?")
-    print(" 1. Obtener una hipoteca inversa")
+    print(" 1. Ingresar cliente")
     print(" 2. Buscar cliente")
     print(" 3. Actualizar cliente")
     print(" 4. Eliminar cliente")
@@ -85,7 +85,7 @@ def desiciones(opcion):
                 edad = input(f"Nueva edad (actual: {client.age}): ") or client.age
                 estado_civil = input(f"Nuevo estado civil (actual: {client.marital_status}): ") or client.marital_status
                 edad_conyugue = input(f"Nueva edad del cónyuge (actual: {client.spouse_age}): ") or client.spouse_age
-                sexo_conyugue = input(f"Nuevo género del cónyuge (actual: {client.spouse_gender}): ") or client.spouse_gender
+                sexo_conyugue = input(f"Nuevo género del cónyuge (actu1al: {client.spouse_gender}): ") or client.spouse_gender
                 valor_propiedad = input(f"Nuevo valor de la propiedad (actual: {client.property_value}): ") or client.property_value
                 tasa_interes = input(f"Nueva tasa de interés (actual: {client.interest_rate}): ") or client.interest_rate
 
