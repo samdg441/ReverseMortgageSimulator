@@ -132,10 +132,7 @@ class ClientController:
         cursor = connection.cursor()
 
         # Execute the query to delete all records from the table
-        cursor.execute("DELETE FROM users")
         cursor.connection.commit()
-        print("RECORDS DELETED SUCCESSFULLY")
-        print("\n")
         cursor.close()
         connection.close()
         
@@ -174,10 +171,10 @@ class ClientController:
                 )
 
             connection.commit()
-            print("CLIENT INSERTED SUCCESSFULLY\n")
+            
         except Exception as e:
             connection.rollback()
-            print(f"Error inserting client: {e}")
+            print(f"Error agregando usuario: {e}")
             raise ClientNotInsertedException()
         finally:
             cursor.close()
@@ -207,7 +204,6 @@ class ClientController:
                             spouse_gender=row[4], property_value=row[5], interest_rate=row[6])
                 return result
             else:
-                print("Client not found")
                 return None
         except Exception as e:
             print(f"Error finding client: {e}")
@@ -227,7 +223,6 @@ class ClientController:
         try:
             cursor.execute(sql.SQL("DELETE FROM users WHERE id = %s"), (id,))
             cursor.connection.commit()
-            print("CLIENT DELETED SUCCESSFULLY")
         except Exception as e:
             print(f"Error deleting client: {e}")
             raise ClientNotDeletedException()
@@ -257,14 +252,13 @@ class ClientController:
                     cursor.execute(
                         sql.SQL("UPDATE users SET marital_status = %s, spouse_age = %s, spouse_gender = %s WHERE id = %s"),
                         (updated_data.marital_status, updated_data.spouse_age, updated_data.spouse_gender, id)
-                    )
-                    print("MARITAL STATUS AND SPOUSE INFO UPDATED SUCCESSFULLY") 
+                    ) 
                 else:
                     cursor.execute(
                         sql.SQL("UPDATE users SET marital_status = 'Single', spouse_age = NULL, spouse_gender = NULL WHERE id = %s"),
                         (id,)
                     )
-                    print("MARITAL STATUS UPDATED TO SINGLE SUCCESSFULLY") 
+
             
             # Actualiza valor de la propiedad
             if updated_data.property_value:
@@ -272,7 +266,6 @@ class ClientController:
                     sql.SQL("UPDATE users SET property_value = %s WHERE id = %s"),
                     (updated_data.property_value, id)
                 )
-                print("PROPERTY VALUE UPDATED SUCCESSFULLY") 
 
             # Actualiza tasa de interés
             if updated_data.interest_rate:
@@ -280,7 +273,6 @@ class ClientController:
                     sql.SQL("UPDATE users SET interest_rate = %s WHERE id = %s"),
                     (updated_data.interest_rate, id)
                 )
-                print("INTEREST RATE UPDATED SUCCESSFULLY") 
 
             # Hacer commit una sola vez al final
             connection.commit()
@@ -312,5 +304,3 @@ class ClientController:
     def verify_interest(interest_rate):
         if interest_rate < MIN_INTEREST_RATE or interest_rate > MAX_INTEREST_RATE:
             raise InterestRateException(interest_rate)
-
-

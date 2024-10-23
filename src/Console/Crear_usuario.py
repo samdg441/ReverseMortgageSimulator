@@ -58,11 +58,12 @@ def desiciones(opcion):
                 tasa_interes = float(input("Por favor ingrese la tasa de interés: "))
 
                 print("-------------------------------------------------------------------------")
-                
-                # Crear el usuario con los nuevos datos
-                usuario = User(cedula, edad, estado_civil, edad_conyugue, sexo_conyugue, valor_propiedad, tasa_interes)
-                ClientController.insert_client(usuario)
-
+                try:
+                    # Crear el usuario con los nuevos datos
+                    usuario = User(cedula, edad, estado_civil, edad_conyugue, sexo_conyugue, valor_propiedad, tasa_interes)
+                    ClientController.insert_client(usuario)
+                finally:
+                    print("CLIENT INSERTED SUCCESSFULLY\n")
             elif opcion == 2:
                 cedula = input("Ingrese la cédula del cliente que desea buscar: ")
                 cliente = ClientController.find_client(cedula)
@@ -79,30 +80,35 @@ def desiciones(opcion):
                 if not client:
                     print("Cliente no encontrado. Por favor, verifique la cédula e intente nuevamente.")
                     continue
+                try:
+                    print("Ingrese los nuevos datos (dejar en blanco para no modificar):")
+                    new_id = input(f"Nuevo ID (actual: {client.id}): ") or client.id
+                    edad = input(f"Nueva edad (actual: {client.age}): ") or client.age
+                    estado_civil = input(f"Nuevo estado civil (actual: {client.marital_status}): ") or client.marital_status
+                    edad_conyugue = input(f"Nueva edad del cónyuge (actual: {client.spouse_age}): ") or client.spouse_age
+                    sexo_conyugue = input(f"Nuevo género del cónyuge (actu1al: {client.spouse_gender}): ") or client.spouse_gender
+                    valor_propiedad = input(f"Nuevo valor de la propiedad (actual: {client.property_value}): ") or client.property_value
+                    tasa_interes = input(f"Nueva tasa de interés (actual: {client.interest_rate}): ") or client.interest_rate
 
-                print("Ingrese los nuevos datos (dejar en blanco para no modificar):")
-                new_id = input(f"Nuevo ID (actual: {client.id}): ") or client.id
-                edad = input(f"Nueva edad (actual: {client.age}): ") or client.age
-                estado_civil = input(f"Nuevo estado civil (actual: {client.marital_status}): ") or client.marital_status
-                edad_conyugue = input(f"Nueva edad del cónyuge (actual: {client.spouse_age}): ") or client.spouse_age
-                sexo_conyugue = input(f"Nuevo género del cónyuge (actu1al: {client.spouse_gender}): ") or client.spouse_gender
-                valor_propiedad = input(f"Nuevo valor de la propiedad (actual: {client.property_value}): ") or client.property_value
-                tasa_interes = input(f"Nueva tasa de interés (actual: {client.interest_rate}): ") or client.interest_rate
-
-                updated_data = User(
-                    id=new_id,
-                    age=edad,
-                    marital_status=estado_civil,
-                    spouse_age=edad_conyugue,
-                    spouse_gender=sexo_conyugue,
-                    property_value=valor_propiedad,
-                    interest_rate=tasa_interes
-                )
-                ClientController.update_client(cedula, updated_data)
+                    updated_data = User(
+                        id=new_id,
+                        age=edad,
+                        marital_status=estado_civil,
+                        spouse_age=edad_conyugue,
+                        spouse_gender=sexo_conyugue,
+                        property_value=valor_propiedad,
+                        interest_rate=tasa_interes
+                    )
+                    ClientController.update_client(cedula, updated_data)
+                finally:
+                    print("datos actualizados")
 
             elif opcion == 4:
-                cedula = input("Ingrese la cédula del cliente a eliminar: ")
-                ClientController.delete_client(cedula)
+                try:
+                    cedula = input("Ingrese la cédula del cliente a eliminar: ")
+                    ClientController.delete_client(cedula)
+                finally:
+                    print("CLIENT DELETED SUCCESSFULLY")
 
             opcion = 0  # Volvemos a la opción para salir o reiniciar
 
