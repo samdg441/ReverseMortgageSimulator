@@ -1,46 +1,66 @@
-# Reverse Mortgage Simulator Project
+# Proyecto Calculadora de Hipoteca Inversa
 
-## Made By:
+## Realizado por:
 
 Samuel Gallego
 
 Sofia Correa
 
-## Purpose
+## Propósito
 
-Its purpose is to provide an accessible and easy-to-use tool that allows users to thoroughly and accurately evaluate the options available in the reverse mortgage market. This software is designed to help older homeowners understand how this type of financial product works, estimate the potential amount of funds they could receive, and visualize the impact a reverse mortgage would have on their financial situation over time. The simulator offers an interactive simulation based on custom data, allowing users to adjust key variables such as property value, interest rate, and loan duration.
+Brindar una herramienta accesible y de fácil uso que permita a los usuarios evaluar de manera exhaustiva y precisa las opciones disponibles en el mercado de hipotecas inversas. Este software está diseñado para ayudar a los propietarios de viviendas de mayor edad a comprender cómo funciona este tipo de producto financiero, estimar la cantidad potencial de fondos que podrían recibir y visualizar el impacto que tendría una hipoteca inversa en su situación financiera a lo largo del tiempo. La calculadora ofrece una simulación interactiva basada en datos personalizados, lo que permite a los usuarios ajustar variables clave como el valor de la propiedad, la tasa de interés y la duración del préstamo.
 
-## How does it work?
+## ¿Cómo funciona?
 
-The user must enter certain personal data (age, gender, marital status, age of their spouse (optional), and gender of their spouse (optional)). Additionally, you must enter information related to your home and the financing (value and interest rate).
+El usuario debe ingresar ciertos datos personales (edad, género, estado civil, edad de su cónyuge (opcional) y género de su cónyuge (opcional)). Adicionalmente, debe ingresar información relacionada con su vivienda y el financiamiento (valor y tasa de interés).
 
-Subsequently, the system will be in charge of carrying out the necessary calculations and will return the value of each monthly installment of the reverse mortgage.
+Posteriormente, el sistema se encargará de realizar los cálculos necesarios y devolverá el valor de cada cuota mensual de la hipoteca inversa.
 
-## How is it done?
+## ¿Cómo se hace?
 
-The project is divided into two main folders, an `src` folder and a `tests` folder. The `src` folder contains a module in which there is a file with the distribution of the classes and methods, and another is the module in which the execution of the program by console is found. On the other hand, the `tests` folder contains each of the unit `tests` (normal cases, extraordinary cases, and error cases). In addition, there are 3 files of the general structure of a project (.gitignore, README.md, and License).
+El proyecto se divide en dos carpetas principales, una carpeta `src` y una carpeta `tests`. La carpeta `src` contiene un módulo en el que se encuentra un archivo con la distribución de las clases y métodos, y otro es el módulo en el que se encuentra la ejecución del programa por consola. Por otro lado, la carpeta `tests` contiene cada uno de los `tests` unitarios (casos normales, casos extraordinarios y casos de error). Además, hay 3 archivos de la estructura general de un proyecto (.gitignore, README.md y License).
 
-## Installation and Use
+## Instalación y Uso
 
-### 1. Clone the Repository:
+### Clonar el Repositorio:
+
+Abre tu consola y ejecuta el siguiente comando:
+
+    git clone "https://github.com/samdg441/ReverseMortgageSimulator.git"
   
-Open your command prompt and run the following command:
+### Cómo lo hago funcionar?
 
-    git clone "https://github.com/emmanuelcalad0615/ReverseMortgageSimulator"
-  
-### 2. Navigate to the Project Directory:
+Prerrequisitos:
 
-Change your directory to the `ReverseMortgageSimulator` folder:
+Asegurese de tener una base de datos PostgreSQL y sus respectivos datos de acceso
+
+Copie el archivo Secret_Config-sample.py como Secret_Config.py y establezca en este archivo los datos de conexion a su base de datos.
+
+Instale el paquete psycopg2 con: pip install psycopg2
+
+### Cómo ejecutar los test
+
+Para ejecutar los casos de prueba deberá de escrbir en la terminal de python los siguientes comandos:
+
+Este ejecutará los casos de prueba para la calculadora de hipoteca inversa:
+python tests/ReverseMortgageTests.py
+
+Este ejecutará los casos de prueba para la base de datos:
+python tests/DataBaseTests.py
+
+### Navegar hasta el directorio del proyecto:
+
+Cambie el directorio a la carpeta `ReverseMortgageSimulator`:
 
     cd path\to\ReverseMortgageSimulator
 
-**Example:** If you cloned the repository to `C:\Projects`, you would run:
+**Ejemplo:** Si clonara el repositorio en `C:\Projects`, ejecutaría:
 
     cd C:\Projects\ReverseMortgageSimulator
 
-### 3. Create a Virtual Environment
+### Crear un entorno virtual
 
-Before installing the required packages, it's recommended to create a virtual environment. Run the following commands:
+Antes de instalar los paquetes necesarios, se recomienda crear un entorno virtual. Ejecute los siguientes comandos:
 
 #### Windows:
 
@@ -52,22 +72,22 @@ Before installing the required packages, it's recommended to create a virtual en
     python3 -m venv venv
     source venv/bin/activate
 
-### 4. Install Requirements
+### Requisitos de instalación
 
-Once the virtual environment is activated, install the required packages using the `requirements.txt` file:
+Una vez activado el entorno virtual, instale los paquetes necesarios mediante el archivo `requirements.txt`:
 
     pip install -r requirements.txt
 
-### 5. Execute the Program
+### Ejecutar el programa
 
-#### Console Execution:
+#### Ejecución de la consola:
 
-Run the `console.py` file:
+Ejecute el archivo `console.py`:
 
     py src\Console\console.py
 
-#### GUI Execution:
+#### Ejecución de la GUI:
 
-If a graphical user interface (GUI) is available, navigate to the `GUI` folder and run the `gui.py` file:
+Si hay una interfaz gráfica de usuario (GUI) disponible, navegue hasta la carpeta `GUI` y ejecute el archivo `gui.py`:
 
     py src\GUI\gui.py
