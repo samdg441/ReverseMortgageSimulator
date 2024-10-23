@@ -8,7 +8,7 @@ sys.path.append(".")
 
 # Importar los módulos requeridos
 from src.Model.User import User
-from src.controller.Controlador_usuarios import ClientController, NoneException
+from src.controller.Controlador_usuarios import ClientController, NoneException , AgeException, PropertyValueException, InterestRateException, MIN_AGE, MAX_INTEREST_RATE, MIN_INTEREST_RATE, MIN_PROPERTY_VALUE, MAX_LIFE_EXPECTANCY_MALES
 
 class ControllerTest(unittest.TestCase):
     
@@ -142,6 +142,103 @@ class ControllerTest(unittest.TestCase):
         usuario_buscado = ClientController.find_client(usuario_prueba.id)
         self.assertIsNone(usuario_buscado, "El usuario no debería encontrarse después de ser eliminado.")
     # Repite para las demás funciones
+    def test_age_exception(self):
+        """
+        Prueba que se lance la excepción AgeException para una edad inválida.
+        """
+        age_invalid = 15  # Edad menor al mínimo permitido
+        usuario_prueba = User(
+            id="1234567",
+            age=age_invalid,
+            marital_status="soltero",
+            spouse_age=None,
+            spouse_gender=None,
+            property_value="100000000",
+            interest_rate="25"
+        )
+
+        with self.assertRaises(AgeException) as context:
+            ClientController.insert_client(usuario_prueba)  # Asegúrate de que esto verifique la edad
+        self.assertEqual(str(context.exception), f"The age: {age_invalid} is invalid; to apply for a reverse mortgage, one must be between {MIN_AGE} and {MAX_LIFE_EXPECTANCY_MALES}")
+
+    def test_none_exception(self):
+        """
+        Prueba que se lance la excepción NoneException al intentar insertar un usuario con campos nulos.
+        """
+        usuario_prueba = User(
+            id=None, 
+            age="68", 
+            marital_status="casada",
+            spouse_age=None,  # Campo nulo
+            spouse_gender="hombre", 
+            property_value="1000000000", 
+            interest_rate="33"
+        )
+
+        with self.assertRaises(NoneException):
+            ClientController.insert_client(usuario_prueba)
+
+    def test_property_value_exception(self):
+        """
+        Prueba que se lance la excepción PropertyValueException para un valor de propiedad inválido.
+        """
+        usuario_prueba = User(
+            id="1234567",
+            age="65",
+            marital_status="soltero",
+            spouse_age=None,
+            spouse_gender=None,
+            property_value="50000",  # Valor por debajo del mínimo permitido
+            interest_rate="25"
+        )
+
+        with self.assertRaises(PropertyValueException) as context:
+            ClientController.insert_client(usuario_prueba)
+        self.assertEqual(str(context.exception), "Property value cannot be below the minimum")
+
+    def test_interest_rate_exception_above_maximum(self):
+        """
+        Prueba que se lance la excepción InterestRateException para una tasa de interés mayor que el máximo.
+        """
+        interest_rate_too_high = 50.0  # Asegúrate de usar un número decimal
+        usuario_prueba_high = User(
+            id="1234567",
+            age="65",
+            marital_status="soltero",
+            spouse_age=None,
+            spouse_gender=None,
+            property_value="100000000",
+            interest_rate=interest_rate_too_high
+        )
+
+        with self.assertRaises(InterestRateException) as context_high:
+            ClientController.insert_client(usuario_prueba_high)
+
+        # Ajusta el mensaje esperado para incluir el valor con punto decimal
+        self.assertEqual(str(context_high.exception), f"The interest rate: {interest_rate_too_high} is invalid; it should not be less than {MIN_INTEREST_RATE} or greater than {MAX_INTEREST_RATE}")
+
+
+
+    def test_interest_rate_valid(self):
+        """
+        Prueba que se pueda insertar un usuario con una tasa de interés válida.
+        """
+        interest_rate_valid = 30  # Tasa de interés válida, dentro de los límites permitidos
+        usuario_prueba = User(
+            id="1234567",
+            age="65",
+            marital_status="soltero",
+            spouse_age=None,
+            spouse_gender=None,
+            property_value="100000000",
+            interest_rate=interest_rate_valid
+        )
+
+        try:
+            ClientController.insert_client(usuario_prueba)  # Debería pasar sin lanzar excepción
+        except InterestRateException:
+            self.fail("InterestRateException should not have been raised for a valid interest rate")
+
 
 if __name__ == '__main__':
     unittest.main()
