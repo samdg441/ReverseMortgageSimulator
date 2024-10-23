@@ -2,11 +2,11 @@ import unittest
 import sys
 from psycopg2 import sql
 
-# Lo importamos para poder incluir la ruta de búsqueda python
+# We import it so we can include the python search path
 sys.path.append("src")
 sys.path.append(".")
 
-# Importar los módulos requeridos
+# Import the required modules
 from src.Model.User import User
 from src.controller.Controlador_usuarios import ClientController, NoneException , AgeException, PropertyValueException, InterestRateException, MIN_AGE, MAX_INTEREST_RATE, MIN_INTEREST_RATE, MIN_PROPERTY_VALUE, MAX_LIFE_EXPECTANCY_MALES
 
@@ -15,9 +15,9 @@ class ControllerTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """
-        Se ejecuta una vez antes de todas las pruebas para inicializar la base de datos y limpiar la tabla.
+        Runs once before all tests to initialize the database and clean up the table.
         """
-        ClientController.clear_table()  # Asegúrate de usar el nombre correcto aquí
+        ClientController.clear_table() # Make sure you use the correct name here
 
     def test_insert_usuario(self):
         usuario_prueba = User(
@@ -35,7 +35,7 @@ class ControllerTest(unittest.TestCase):
         print("Usuario insertado. Buscando usuario...")
 
         usuario_buscado = ClientController.find_client(usuario_prueba.id)
-        print(f"Usuario buscado: {usuario_buscado}")  # Esto debe mostrar detalles del usuario o 'None'
+        print(f"Usuario buscado: {usuario_buscado}")  # This should display user details or 'None'
 
         self.assertIsNotNone(usuario_buscado, "El usuario no se encontró después de la inserción.")
         self.assertTrue(usuario_buscado.is_equal(usuario_prueba), "Los datos del usuario encontrado no coinciden.")
@@ -44,7 +44,7 @@ class ControllerTest(unittest.TestCase):
 
     def test_find_usuario(self):
         """
-        Prueba que se pueda buscar un usuario después de haber sido insertado.
+        Tests whether a user can be searched after being inserted.
         """
         usuario_prueba = User(
             id="12346577", 
@@ -56,16 +56,16 @@ class ControllerTest(unittest.TestCase):
             interest_rate="25"
         )
         
-        ClientController.insert_client(usuario_prueba)  # Inserción previa
+        ClientController.insert_client(usuario_prueba)  # Pre-insertion
         
-        # Buscar el usuario insertado
+        # Find the inserted user
         usuario_buscado = ClientController.find_client(usuario_prueba.id)
         self.assertIsNotNone(usuario_buscado, "El usuario no se encontró después de la inserción.")
         self.assertTrue(usuario_buscado.is_equal(usuario_prueba), "Los datos del usuario encontrado no coinciden.")
 
     def test_none_error(self):
         """
-        Prueba que se lance la excepción None_Exception al intentar insertar un usuario con cédula nula.
+        Test that the None_Exception exception is thrown when trying to insert a user with a null ID.
         """
         usuario_prueba = User(
             id=None, 
@@ -78,13 +78,13 @@ class ControllerTest(unittest.TestCase):
         )
 
         with self.assertRaises(NoneException):
-            ClientController.insert_client(usuario_prueba)  # Asegúrate de usar el nombre correcto aquí
+            ClientController.insert_client(usuario_prueba)  # Make sure you use the correct name here
 
     def test_update_usuario(self):
         """
-        Prueba que se pueda actualizar correctamente un usuario.
+        Tests that a user can be updated successfully.
         """
-        # Supongamos que el usuario ya ha sido insertado previamente
+        # Suppose the user has already been inserted previously
         usuario_prueba = User(
             id="987654321",
             age="65",
@@ -95,10 +95,10 @@ class ControllerTest(unittest.TestCase):
             interest_rate="30"
         )
 
-        # Actualizar la edad
+        # Update age
         usuario_actualizado = User(
             id="987654321",
-            age="66",  # Actualizamos solo la edad
+            age="66",  # We only update the age
             marital_status="Married",
             spouse_age="64",
             spouse_gender="mujer",
@@ -120,9 +120,9 @@ class ControllerTest(unittest.TestCase):
 
     def test_delete_usuario(self):
         """
-        Prueba que se elimine un usuario correctamente.
+        Tests that a user is deleted successfully.
         """
-        # Crear un usuario de prueba y insertarlo
+        # Create a test user and insert it
         usuario_prueba = User(
             id="1234658", 
             age="70", 
@@ -135,18 +135,18 @@ class ControllerTest(unittest.TestCase):
         
         ClientController.insert_client(usuario_prueba)
 
-        # Eliminar el usuario
+        # Delete the user
         ClientController.delete_client(usuario_prueba.id)
 
-        # Intentar buscar el usuario eliminado
+        # Try to find the deleted user
         usuario_buscado = ClientController.find_client(usuario_prueba.id)
         self.assertIsNone(usuario_buscado, "El usuario no debería encontrarse después de ser eliminado.")
-    # Repite para las demás funciones
+    # Repeat for other functions
     def test_age_exception(self):
         """
-        Prueba que se lance la excepción AgeException para una edad inválida.
+        Test to throw AgeException for an invalid age.
         """
-        age_invalid = 15  # Edad menor al mínimo permitido
+        age_invalid = 15  # Age less than the minimum allowed
         usuario_prueba = User(
             id="1234567",
             age=age_invalid,
@@ -163,7 +163,7 @@ class ControllerTest(unittest.TestCase):
 
     def test_none_exception(self):
         """
-        Prueba que se lance la excepción NoneException al intentar insertar un usuario con campos nulos.
+        Test to throw NoneException when trying to insert a user with null fields.
         """
         usuario_prueba = User(
             id=None, 
@@ -180,7 +180,7 @@ class ControllerTest(unittest.TestCase):
 
     def test_property_value_exception(self):
         """
-        Prueba que se lance la excepción PropertyValueException para un valor de propiedad inválido.
+        Tests whether the PropertyValueException is thrown for an invalid property value.
         """
         usuario_prueba = User(
             id="1234567",
@@ -188,7 +188,7 @@ class ControllerTest(unittest.TestCase):
             marital_status="soltero",
             spouse_age=None,
             spouse_gender=None,
-            property_value="50000",  # Valor por debajo del mínimo permitido
+            property_value="50000",  # Value below minimum allowed
             interest_rate="25"
         )
 
@@ -198,9 +198,9 @@ class ControllerTest(unittest.TestCase):
 
     def test_interest_rate_exception_above_maximum(self):
         """
-        Prueba que se lance la excepción InterestRateException para una tasa de interés mayor que el máximo.
+        Test that the InterestRateException is thrown for an interest rate greater than the maximum.
         """
-        interest_rate_too_high = 50.0  # Asegúrate de usar un número decimal
+        interest_rate_too_high = 50.0  # Make sure to use a decimal number
         usuario_prueba_high = User(
             id="1234567",
             age="65",
@@ -214,16 +214,16 @@ class ControllerTest(unittest.TestCase):
         with self.assertRaises(InterestRateException) as context_high:
             ClientController.insert_client(usuario_prueba_high)
 
-        # Ajusta el mensaje esperado para incluir el valor con punto decimal
+        # Adjust the expected message to include the value with decimal point
         self.assertEqual(str(context_high.exception), f"The interest rate: {interest_rate_too_high} is invalid; it should not be less than {MIN_INTEREST_RATE} or greater than {MAX_INTEREST_RATE}")
 
 
 
     def test_interest_rate_valid(self):
         """
-        Prueba que se pueda insertar un usuario con una tasa de interés válida.
+        Test that a user can be inserted with a valid interest rate.
         """
-        interest_rate_valid = 30  # Tasa de interés válida, dentro de los límites permitidos
+        interest_rate_valid = 30  # Valid interest rate, within the permitted limits
         usuario_prueba = User(
             id="1234567",
             age="65",
@@ -235,7 +235,7 @@ class ControllerTest(unittest.TestCase):
         )
 
         try:
-            ClientController.insert_client(usuario_prueba)  # Debería pasar sin lanzar excepción
+            ClientController.insert_client(usuario_prueba)  # Should pass without throwing exception
         except InterestRateException:
             self.fail("InterestRateException should not have been raised for a valid interest rate")
 
