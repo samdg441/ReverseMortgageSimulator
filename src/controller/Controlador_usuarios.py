@@ -244,54 +244,46 @@ class ClientController:
         cursor = connection.cursor()
 
         try:
-            # Update client's ID number if it's provided using sql.SQL
+            # Actualiza el ID del cliente
             if updated_data.id:
                 cursor.execute(
                     sql.SQL("UPDATE users SET id = %s WHERE id = %s"),
                     (updated_data.id, id)
                 )
-                connection.commit()
-                print("ID NUMBER UPDATED SUCCESSFULLY")
 
-            # Update marital status with sql.SQL
+            # Actualiza estado civil y datos del cónyuge
             if updated_data.marital_status:
                 if updated_data.marital_status.title() == "Married":  
                     cursor.execute(
-                        sql.SQL("UPDATE users SET marital_status = %s WHERE id = %s"),
-                        (updated_data.marital_status, id)
+                        sql.SQL("UPDATE users SET marital_status = %s, spouse_age = %s, spouse_gender = %s WHERE id = %s"),
+                        (updated_data.marital_status, updated_data.spouse_age, updated_data.spouse_gender, id)
                     )
-                    if updated_data.spouse_age and updated_data.spouse_gender:
-                        cursor.execute(
-                            sql.SQL("UPDATE users SET spouse_age = %s, spouse_gender = %s WHERE id = %s"),
-                            (updated_data.spouse_age, updated_data.spouse_gender, id)
-                        )
-                    connection.commit()
-                    print("MARITAL STATUS UPDATED SUCCESSFULLY") 
+                    print("MARITAL STATUS AND SPOUSE INFO UPDATED SUCCESSFULLY") 
                 else:
                     cursor.execute(
                         sql.SQL("UPDATE users SET marital_status = 'Single', spouse_age = NULL, spouse_gender = NULL WHERE id = %s"),
                         (id,)
                     )
-                    connection.commit()
-                    print("MARITAL STATUS UPDATED SUCCESSFULLY") 
+                    print("MARITAL STATUS UPDATED TO SINGLE SUCCESSFULLY") 
             
-            # Update property value with sql.SQL
+            # Actualiza valor de la propiedad
             if updated_data.property_value:
                 cursor.execute(
                     sql.SQL("UPDATE users SET property_value = %s WHERE id = %s"),
                     (updated_data.property_value, id)
                 )
-                connection.commit()
                 print("PROPERTY VALUE UPDATED SUCCESSFULLY") 
 
-            # Update interest rate with sql.SQL
+            # Actualiza tasa de interés
             if updated_data.interest_rate:
                 cursor.execute(
                     sql.SQL("UPDATE users SET interest_rate = %s WHERE id = %s"),
                     (updated_data.interest_rate, id)
                 )
-                connection.commit()
                 print("INTEREST RATE UPDATED SUCCESSFULLY") 
+
+            # Hacer commit una sola vez al final
+            connection.commit()
 
         except Exception as e:
             print(f"Error updating client: {e}")
@@ -299,6 +291,7 @@ class ClientController:
         finally:
             cursor.close()
             connection.close()
+
         
     @staticmethod
     def verify_empty_fields(id, marital_status, age, property_value, interest_rate):

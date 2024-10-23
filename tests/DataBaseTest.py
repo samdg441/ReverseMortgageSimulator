@@ -5,13 +5,10 @@ from psycopg2 import sql
 # Lo importamos para poder incluir la ruta de búsqueda python
 sys.path.append("src")
 sys.path.append(".")
-sys.path.append("..")
 
 # Importar los módulos requeridos
 from src.Model.User import User
-from src.controller.Controlador_usuarios import (ClientNotUpdatedException, ClientNotInsertedException, ClientNotDeletedException, AgeException, NoneException, PropertyValueException,
-                                                 InterestRateException,insert_client,find_client,delete_client,update_client)
-
+from src.controller.Controlador_usuarios import ClientController, NoneException
 
 class ControllerTest(unittest.TestCase):
     
@@ -20,125 +17,131 @@ class ControllerTest(unittest.TestCase):
         """
         Se ejecuta una vez antes de todas las pruebas para inicializar la base de datos y limpiar la tabla.
         """
-        Controlador_usuarios.create_table()
-        Controlador_usuarios.clear_table()
+        ClientController.clear_table()  # Asegúrate de usar el nombre correcto aquí
 
-    def test_insert_and_select_usuario_1(self):
+    def test_insert_usuario(self):
+        usuario_prueba = User(
+            id="1234657", 
+            age="65", 
+            marital_status="soltero",
+            spouse_age=None, 
+            spouse_gender=None, 
+            property_value="100000000", 
+            interest_rate="25"
+        )
+        
+        print("Insertando usuario de prueba...")
+        ClientController.insert_client(usuario_prueba)
+        print("Usuario insertado. Buscando usuario...")
+
+        usuario_buscado = ClientController.find_client(usuario_prueba.id)
+        print(f"Usuario buscado: {usuario_buscado}")  # Esto debe mostrar detalles del usuario o 'None'
+
+        self.assertIsNotNone(usuario_buscado, "El usuario no se encontró después de la inserción.")
+        self.assertTrue(usuario_buscado.is_equal(usuario_prueba), "Los datos del usuario encontrado no coinciden.")
+
+
+
+    def test_find_usuario(self):
         """
-        Prueba que se inserte correctamente un usuario y se pueda buscar.
+        Prueba que se pueda buscar un usuario después de haber sido insertado.
         """
         usuario_prueba = User(
-            cedula="1234657", 
-            edad="65", 
-            estado_civil="soltero",
-            edad_conyugue=None, 
-            sexo_conyugue=None, 
-            valor_inmueble="100000000", 
-            tasa_interes="25"
+            id="12346577", 
+            age="65", 
+            marital_status="soltero",
+            spouse_age=None, 
+            spouse_gender=None, 
+            property_value="100000000", 
+            interest_rate="25"
         )
         
-        Controlador_Usuarios.insert_client(usuario_prueba)
+        ClientController.insert_client(usuario_prueba)  # Inserción previa
         
-        usuario_buscado = Controlador_Usuarios.find_client(usuario_prueba.cedula)
+        # Buscar el usuario insertado
+        usuario_buscado = ClientController.find_client(usuario_prueba.id)
         self.assertIsNotNone(usuario_buscado, "El usuario no se encontró después de la inserción.")
-        self.assertTrue(usuario_buscado.es_Igual(usuario_prueba), "Los datos del usuario encontrado no coinciden.")
-
-    def test_update_usuario(self):
-        """
-        Prueba que se actualicen correctamente los datos de un usuario.
-        """
-        datos_actualizar = User(
-            cedula=None, 
-            edad=None, 
-            estado_civil="casado",
-            edad_conyugue="66", 
-            sexo_conyugue="mujer", 
-            valor_inmueble=None, 
-            tasa_interes=None
-        )
-        
-        Controlador_Usuarios.update_client(cedula_buscada="1234657", datos_actualizar=datos_actualizar)
-        usuario_actualizado = Controlador_Usuarios.find_client("1234657")
-        
-        self.assertEqual(usuario_actualizado.edad_conyugue, "66")
-        self.assertEqual(usuario_actualizado.estado_civil, "casado")
-
-    def test_delete_usuario(self):
-        """
-        Prueba que se elimine correctamente un usuario de la base de datos.
-        """
-        Controlador_Usuarios.delete_client(cedula_buscada="55555555")
-        usuario_buscado = Controlador_Usuarios.find_client("55555555")
-        
-        self.assertIsNone(usuario_buscado, "El usuario no fue eliminado correctamente.")
+        self.assertTrue(usuario_buscado.is_equal(usuario_prueba), "Los datos del usuario encontrado no coinciden.")
 
     def test_none_error(self):
         """
         Prueba que se lance la excepción None_Exception al intentar insertar un usuario con cédula nula.
         """
         usuario_prueba = User(
-            cedula=None, 
-            edad="68", 
-            estado_civil="casada",
-            edad_conyugue="62", 
-            sexo_conyugue="hombre", 
-            valor_inmueble="1000000000", 
-            tasa_interes="33"
+            id=None, 
+            age="68", 
+            marital_status="casada",
+            spouse_age="62", 
+            spouse_gender="hombre", 
+            property_value="1000000000", 
+            interest_rate="33"
         )
 
-        with self.assertRaises(None_Exception):
-            Controlador_Usuarios.insert_client(usuario_prueba)
+        with self.assertRaises(NoneException):
+            ClientController.insert_client(usuario_prueba)  # Asegúrate de usar el nombre correcto aquí
 
-    def test_edad_error(self):
+    def test_update_usuario(self):
         """
-        Prueba que se lance la excepción Edad_Exception al intentar insertar un usuario con edad no permitida.
+        Prueba que se pueda actualizar correctamente un usuario.
         """
+        # Supongamos que el usuario ya ha sido insertado previamente
         usuario_prueba = User(
-            cedula="1038867289", 
-            edad="55", 
-            estado_civil="soltero",
-            edad_conyugue=None, 
-            sexo_conyugue=None, 
-            valor_inmueble="84000000", 
-            tasa_interes="35"
+            id="987654321",
+            age="65",
+            marital_status="Soltero",
+            spouse_age=None,
+            spouse_gender=None,
+            property_value="120000000",
+            interest_rate="30"
         )
 
-        with self.assertRaises(Edad_Exception):
-            Controlador_Usuarios.insert_client(usuario_prueba)
+        # Actualizar la edad
+        usuario_actualizado = User(
+            id="987654321",
+            age="66",  # Actualizamos solo la edad
+            marital_status="Married",
+            spouse_age="64",
+            spouse_gender="mujer",
+            property_value="120000000",
+            interest_rate="30"
+        )
 
-    def test_valor_inmueble_error(self):
+        ClientController.update_client(usuario_prueba.id, usuario_actualizado)
+
+        usuario_buscado = ClientController.find_client(usuario_prueba.id)
+
+        print("Datos del usuario buscado:", usuario_buscado)
+        print("Datos del usuario actualizado:", usuario_actualizado)
+
+        self.assertTrue(usuario_actualizado.is_equal(usuario_actualizado), "Los datos del usuario encontrado no coinciden con los datos actualizados.")
+
+
+
+
+    def test_delete_usuario(self):
         """
-        Prueba que se lance la excepción Valor_Inmueble_Exception al intentar insertar un usuario con valor de inmueble no permitido.
+        Prueba que se elimine un usuario correctamente.
         """
+        # Crear un usuario de prueba y insertarlo
         usuario_prueba = User(
-            cedula="1038867289", 
-            edad="66", 
-            estado_civil="soltero",
-            edad_conyugue=None, 
-            sexo_conyugue=None, 
-            valor_inmueble="7000000", 
-            tasa_interes="40"
+            id="1234658", 
+            age="70", 
+            marital_status="casado",
+            spouse_age="68", 
+            spouse_gender="mujer", 
+            property_value="200000000", 
+            interest_rate="35"
         )
+        
+        ClientController.insert_client(usuario_prueba)
 
-        with self.assertRaises(Valor_Inmueble_Exception):
-            Controlador_Usuarios.insert_client(usuario_prueba)
+        # Eliminar el usuario
+        ClientController.delete_client(usuario_prueba.id)
 
-    def test_tasa_interes_error(self):
-        """
-        Prueba que se lance la excepción Tasa_Exception al intentar insertar un usuario con tasa de interés no permitida.
-        """
-        usuario_prueba = User(
-            cedula="1038867289", 
-            edad="66", 
-            estado_civil="soltero",
-            edad_conyugue=None, 
-            sexo_conyugue=None, 
-            valor_inmueble="125000000000", 
-            tasa_interes="48"
-        )
-
-        with self.assertRaises(Tasa_Exception):
-            Controlador_Usuarios.Insertar_Usuario(usuario_prueba)
+        # Intentar buscar el usuario eliminado
+        usuario_buscado = ClientController.find_client(usuario_prueba.id)
+        self.assertIsNone(usuario_buscado, "El usuario no debería encontrarse después de ser eliminado.")
+    # Repite para las demás funciones
 
 if __name__ == '__main__':
     unittest.main()

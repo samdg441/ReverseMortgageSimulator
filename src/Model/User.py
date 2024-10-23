@@ -29,11 +29,15 @@ class User:
     def is_equal(self, compare_with):
         """
         Compares the current object with another instance of the User class
+        Returns True if all attributes match, otherwise False
         """
-        assert(self.id == compare_with.id)
-        assert(self.age == compare_with.age)
-        assert(self.marital_status == compare_with.marital_status)
-        assert(self.spouse_age == compare_with.spouse_age)
-        assert(self.spouse_gender == compare_with.spouse_gender)
-        assert(self.property_value == compare_with.property_value)
-        assert(self.interest_rate == compare_with.interest_rate)
+        return (
+            self.id == compare_with.id and
+            self.age == compare_with.age and
+            self.marital_status == compare_with.marital_status and
+            self.spouse_age == compare_with.spouse_age and
+            self.spouse_gender == compare_with.spouse_gender and
+            self.property_value == compare_with.property_value and
+            self.interest_rate == compare_with.interest_rate
+        )
+
