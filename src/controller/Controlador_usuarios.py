@@ -4,6 +4,7 @@ sys.path.append("src")
 sys.path.append(".")
 
 import psycopg2
+from psycopg2 import sql
 from controller import Secret_Config
 from Model.User import User
 
@@ -195,8 +196,7 @@ class ClientController:
         row = cursor.fetchone()
         if row:
             result = User(id=row[0], age=row[1], marital_status=row[2], spouse_age=row[3],
-                          spouse_gender=row[4], property_value=row[5], interest_rate=row[6])
-            print(result)
+                        spouse_gender=row[4], property_value=row[5], interest_rate=row[6])
             return result
         else:
             print("Client not found")
@@ -212,7 +212,7 @@ class ClientController:
         cursor = connection.cursor()
 
         try:
-            cursor.execute("DELETE FROM users WHERE id = %s", (id,))
+            cursor.execute(sql.SQL("DELETE FROM users WHERE id = %s"), (id,))
             cursor.connection.commit()
             print("CLIENT DELETED SUCCESSFULLY")
         except Exception as e:
