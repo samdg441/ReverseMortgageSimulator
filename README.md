@@ -2,9 +2,9 @@
 
 ## Made By:
 
-Tomás Cordoba Urquijo
+Samuel Gallego
 
-Emmanuel Calad Correa
+Sofia Correa
 
 ## Purpose
 
